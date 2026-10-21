@@ -1,0 +1,445 @@
+[
+ {
+  "county": "Broward",
+  "name": "Lauderdale Lakes",
+  "address": "3718-3 W. Oakland Park Blvd., Lauderdale Lakes, FL 33311",
+  "phone": "954-765-4697",
+  "hours": [
+   "Mon - Fri: 8:30 AM - 5:00 PM"
+  ],
+  "group": "DL",
+  "op": "Broward County Tax Collector (tax collector-sponsored)",
+  "policy": "Appointment system run by the Broward County Tax Collector. Appointments are for Broward County residents only; the name on the appointment must match the ID shown at check-in <span class=\"src\">[<a href=\"https://appointments.browardtax.org/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official pages.",
+  "status": "appt",
+  "book": "https://appointments.browardtax.org/",
+  "notes": [],
+  "tc": true
+ },
+ {
+  "county": "Broward",
+  "name": "Margate",
+  "address": "1135 Banks Road, Margate, FL 33063",
+  "phone": "954-497-1570",
+  "hours": [
+   "Mon, Tues, Thurs, Fri: 8:00 AM - 5:00 PM",
+   "Wed: 8:30 AM - 5:00 PM"
+  ],
+  "group": "DL",
+  "op": "FLHSMV (state-run)",
+  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "status": "unclear",
+  "book": "https://nqapflhsmv.nemoqappointment.com",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Broward",
+  "name": "Sunrise",
+  "address": "3511 N Pine Island Road, Sunrise, FL 33351",
+  "phone": "954-497-1570",
+  "hours": [
+   "Mon, Tues, Thurs, Fri: 8:00 AM - 5:00 PM",
+   "Wed: 8:30 AM - 5:00 PM"
+  ],
+  "group": "DL",
+  "op": "FLHSMV (state-run)",
+  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "status": "unclear",
+  "book": "https://nqapflhsmv.nemoqappointment.com",
+  "notes": [],
+  "tc": false
+ },
+ {
+  "county": "Broward",
+  "name": "Pembroke Pines",
+  "address": "8001 Pembroke Road, Pembroke Pines, FL 33025",
+  "phone": "954-497-1570",
+  "hours": [
+   "Mon, Tues, Thurs, Fri: 8:00 AM - 5:00 PM",
+   "Wed: 8:30 AM - 5:00 PM"
+  ],
+  "group": "DL",
+  "op": "FLHSMV (state-run)",
+  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "status": "unclear",
+  "book": "https://nqapflhsmv.nemoqappointment.com",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Broward",
+  "name": "Pompano Citi Centre",
+  "address": "1955 Federal Hwy, Unit J209, Pompano Beach, FL 33062",
+  "phone": "954-497-1570",
+  "hours": [
+   "Mon, Tues, Thurs, Fri: 8:00 AM - 5:00 PM",
+   "Wed: 8:30 AM - 5:00 PM"
+  ],
+  "group": "DL",
+  "op": "FLHSMV (state-run)",
+  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "status": "unclear",
+  "book": "https://nqapflhsmv.nemoqappointment.com",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Coral Gables",
+  "address": "224 Minorca Ave, Coral Gables, FL 33134",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "No Driving Exams"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Coral Reef",
+  "address": "14653 SW 122 Ave, Miami, FL 33186",
+  "phone": "305-375-5548",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Downtown Miami",
+  "address": "200 NW 2nd Ave, Miami, FL 33128",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>. This office was named in the Tax Collector virtual walk-in launch (scan the QR code at the office, get a virtual time, return 15 minutes before) <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "No Written/Driving Exams"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Florida City",
+  "address": "1448 N Krome Ave, Florida City, FL 33034",
+  "phone": "305-375-5548",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Hialeah Gardens",
+  "address": "11093 NW 138th St., Suites #1-9, Hialeah, FL 33018",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Kendall (Suite 23)",
+  "address": "11735 SW 147th Ave, Miami, FL 33196",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Miami Beach",
+  "address": "100 16th St, Miami Beach, FL 33139",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "No Driving Exams"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Miami Central",
+  "address": "3721 NW 7th St, Miami, FL 33126",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>. This office was named in the Tax Collector virtual walk-in launch (scan the QR code at the office, get a virtual time, return 15 minutes before) <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Miami Gardens",
+  "address": "18326 NW 7th Ave, Miami Gardens, FL 33169",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Midway Crossings (Suite 82C)",
+  "address": "7795 W Flagler St, Space 82c, Miami, FL 33144",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>. This office was named in the Tax Collector virtual walk-in launch (scan the QR code at the office, get a virtual time, return 15 minutes before) <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "North Dade Justice Center",
+  "address": "15555 Biscayne Blvd, North Miami Beach, FL 33160",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-4:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "No Written/Driving Exams"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Northside",
+  "address": "7900 NW 27 Ave, Miami, FL 33147",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-5:00pm",
+   "Saturday: 8:00am-1:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "CDL HazMat"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Miami-Dade",
+  "name": "Richard Gerstein Justice Center",
+  "address": "1351 NW 12 St, Suite 131-133, Miami, FL 33125",
+  "phone": "305-375-5448",
+  "hours": [
+   "Mon - Fri: 8:00am-4:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Miami-Dade County Tax Collector",
+  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
+  "status": "walk",
+  "book": "https://app.mdctaxcollector.gov/",
+  "notes": [
+   "No Written/Driving Exams"
+  ],
+  "tc": false
+ },
+ {
+  "county": "Palm Beach",
+  "name": "Belle Glade",
+  "address": "2976 State Road 15, Belle Glade, FL 33430",
+  "phone": "561-355-2264",
+  "hours": [
+   "Mon-Fri",
+   "DL: 8:15am-4:30pm",
+   "MV: 8:15am-5:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Palm Beach County Tax Collector",
+  "policy": "\"By Reservation Only\", Palm Beach County residents only <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/palm-beach/\" rel=\"noopener\">source</a>]</span>. The Tax Collector says a reservation is required for in-person service <span class=\"src\">[<a href=\"https://www.pbctax.gov/reservations/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "appt",
+  "book": "https://www.pbctax.gov/reservations/",
+  "notes": [],
+  "tc": false
+ },
+ {
+  "county": "Palm Beach",
+  "name": "Delray Beach",
+  "address": "501 S. Congress Ave., Delray Beach, FL 33445",
+  "phone": "561-355-2264",
+  "hours": [
+   "Mon-Fri",
+   "DL: 8:15am-4:30pm",
+   "MV: 8:15am-5:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Palm Beach County Tax Collector",
+  "policy": "\"By Reservation Only\", Palm Beach County residents only <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/palm-beach/\" rel=\"noopener\">source</a>]</span>. The Tax Collector says a reservation is required for in-person service <span class=\"src\">[<a href=\"https://www.pbctax.gov/reservations/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "appt",
+  "book": "https://www.pbctax.gov/reservations/",
+  "notes": [],
+  "tc": false
+ },
+ {
+  "county": "Palm Beach",
+  "name": "Greenacres",
+  "address": "4215 S. Military Trail, Greenacres, FL 33463",
+  "phone": "561-355-2264",
+  "hours": [
+   "Mon-Fri",
+   "DL: 8:15am-4:30pm",
+   "MV: 8:15am-5:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Palm Beach County Tax Collector",
+  "policy": "\"By Reservation Only\", Palm Beach County residents only <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/palm-beach/\" rel=\"noopener\">source</a>]</span>. The Tax Collector says a reservation is required for in-person service <span class=\"src\">[<a href=\"https://www.pbctax.gov/reservations/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "appt",
+  "book": "https://www.pbctax.gov/reservations/",
+  "notes": [],
+  "tc": false
+ },
+ {
+  "county": "Palm Beach",
+  "name": "Palm Beach Gardens",
+  "address": "3185 PGA Blvd., Palm Beach Gardens, FL 33410",
+  "phone": "561-355-2264",
+  "hours": [
+   "Mon-Fri",
+   "DL: 8:15am-4:30pm",
+   "MV: 8:15am-5:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Palm Beach County Tax Collector",
+  "policy": "\"By Reservation Only\", Palm Beach County residents only <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/palm-beach/\" rel=\"noopener\">source</a>]</span>. The Tax Collector says a reservation is required for in-person service <span class=\"src\">[<a href=\"https://www.pbctax.gov/reservations/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "appt",
+  "book": "https://www.pbctax.gov/reservations/",
+  "notes": [],
+  "tc": false
+ },
+ {
+  "county": "Palm Beach",
+  "name": "Westlake",
+  "address": "16440 Town Center Parkway South, Westlake, FL 33470",
+  "phone": "561-355-2264",
+  "hours": [
+   "Mon-Fri",
+   "DL: 8:15am-4:30pm",
+   "MV:8:15am-5:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Palm Beach County Tax Collector",
+  "policy": "\"By Reservation Only\", Palm Beach County residents only <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/palm-beach/\" rel=\"noopener\">source</a>]</span>. The Tax Collector says a reservation is required for in-person service <span class=\"src\">[<a href=\"https://www.pbctax.gov/reservations/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "appt",
+  "book": "https://www.pbctax.gov/reservations/",
+  "notes": [],
+  "tc": false
+ },
+ {
+  "county": "Palm Beach",
+  "name": "West Palm Beach",
+  "address": "301 N. Olive Ave., First Floor, West Palm Beach, FL 33401",
+  "phone": "561-355-2264",
+  "hours": [
+   "Mon-Fri",
+   "DL: 8:15am-4:30pm",
+   "MV:8:15am-5:00pm"
+  ],
+  "group": "DL & MV",
+  "op": "Palm Beach County Tax Collector",
+  "policy": "\"By Reservation Only\", Palm Beach County residents only <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/palm-beach/\" rel=\"noopener\">source</a>]</span>. The Tax Collector says a reservation is required for in-person service <span class=\"src\">[<a href=\"https://www.pbctax.gov/reservations/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "appt",
+  "book": "https://www.pbctax.gov/reservations/",
+  "notes": [],
+  "tc": false
+ }
+]
