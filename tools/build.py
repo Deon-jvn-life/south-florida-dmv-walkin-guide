@@ -5,6 +5,11 @@ import json,os,sys,re
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE); sys.path.insert(0,HERE)
 from sitelib import Site,CSS,D,esc,a
 BASE="https://south-florida-dmv-walkin-guide.vercel.app"
+# Shown near the top of every page and in full in the footer.
+DISCLAIMER="For general information only. This independent site is not affiliated with the Florida DHSMV, any county tax collector or any government agency. Information can change and may contain errors; always confirm with the official office before you act. Nothing here is legal or professional advice, and we accept no liability for decisions made using it."
+# Optional. A non-empty value emits that meta tag. Leave empty to omit it.
+VERIFY={"google-site-verification":"","msvalidate.01":""}
+RELATED=[("https://us-passport-walkin-finder.vercel.app/","South Florida passport walk-in finder"),("https://south-florida-dog-beaches.vercel.app/","South Florida dog beaches")]
 S=dict(loc="https://www.flhsmv.gov/locations/",bro="https://www.flhsmv.gov/locations/broward/",mia="https://www.flhsmv.gov/locations/miami-dade/",pbc="https://www.flhsmv.gov/locations/palm-beach/",
  nemo="https://nqapflhsmv.nemoqappointment.com",btc="https://browardtax.org/",btcappt="https://appointments.browardtax.org/",btcloc="https://browardtax.org/locations/",btcnews="https://browardtax.org/news/flow-driver-license-aug-2025/",
  mdc="https://www.mdctaxcollector.gov/",mdcdl="https://www.mdctaxcollector.gov/driver-license-and-id-card-services",mdcloc="https://www.mdctaxcollector.gov/locations",mdcappt="https://app.mdctaxcollector.gov/",
@@ -35,11 +40,11 @@ for r in raw:
     notes=[x for x in r['comments'] if x and 'MyDMV' not in x and 'mail correspondence' not in x and not x.startswith('PO Box') and 'Residents Only' not in x and 'By Reservation' not in x]
     recs.append(dict(county=c,name=nm,address=r['address'],phone=r['phone'],hours=r['hours'],group=r['group'],op=op,policy=pol,status=st,book=book,notes=notes,tc=tc))
 json.dump(recs,open(os.path.join(HERE,'offices_parsed.json'),'w'),indent=1)
-NAV=[('index.html','Home')]+[(f'counties/{k}/index.html',v[0]) for k,v in COUNTIES.items()]+[('walk-in-vs-appointment/index.html','Walk-in vs appointment'),('what-to-bring/index.html','What to bring'),('fake-appointment-sites/index.html','Fake appointment sites'),('faq/index.html','FAQ')]
+NAV=[('/','Home')]+[(f'/counties/{k}/',v[0]) for k,v in COUNTIES.items()]+[('/walk-in-vs-appointment/','Walk-in vs appointment'),('/what-to-bring/','What to bring'),('/fake-appointment-sites/','Fake appointment sites'),('/faq/','FAQ')]
 FOOT=f'Unofficial, independent guide. Not affiliated with FLHSMV or any county tax collector. We do not sell appointments, and nobody legitimately can: book only on {a(S["loc"],"flhsmv.gov")}, {a(S["mdc"],"mdctaxcollector.gov")}, {a(S["btc"],"browardtax.org")} or {a(S["pbtc"],"pbctax.gov")}. Office data from the FLHSMV county location pages; policies from each tax collector site.'
-s=Site(ROOT,BASE,"South Florida DMV Walk-in Guide",NAV,FOOT,CSS)
-FAKE=f'<div class="card warn"><strong>Warning: fake appointment websites.</strong> The Miami-Dade Tax Collector warns residents about unofficial appointment websites issuing invalid confirmations, and says to schedule only through mdctaxcollector.gov and verify any questionable appointment directly with the office{src("mdc","mdcfake")}. Book only on the official sites: {a(S["mdcappt"],"app.mdctaxcollector.gov")} (Miami-Dade), {a(S["btcappt"],"appointments.browardtax.org")} or {a(S["nemo"],"the FLHSMV appointment system")} (Broward), {a(S["pbres"],"pbctax.gov/reservations")} (Palm Beach). Never pay a third party for a slot. {a("{R}fake-appointment-sites/index.html","How to spot a fake")}.</div>'
-def fake(r): return FAKE.replace('{R}',r)
+s=Site(ROOT,BASE,"South Florida DMV Walk-in Guide",NAV,FOOT,CSS,related=RELATED,verify=VERIFY,disclaimer=DISCLAIMER)
+FAKE=f'<div class="card warn"><strong>Warning: fake appointment websites.</strong> The Miami-Dade Tax Collector warns residents about unofficial appointment websites issuing invalid confirmations, and says to schedule only through mdctaxcollector.gov and verify any questionable appointment directly with the office{src("mdc","mdcfake")}. Book only on the official sites: {a(S["mdcappt"],"app.mdctaxcollector.gov")} (Miami-Dade), {a(S["btcappt"],"appointments.browardtax.org")} or {a(S["nemo"],"the FLHSMV appointment system")} (Broward), {a(S["pbres"],"pbctax.gov/reservations")} (Palm Beach). Never pay a third party for a slot. {a("/fake-appointment-sites/","How to spot a fake")}.</div>'
+def fake(r): return FAKE
 CONF=f'''<div class="card conf"><strong>Conflicts and gaps in official sources ({D})</strong><ul>
 <li>FLHSMV says standard business hours are 9 a.m. to 12 p.m. and 1 p.m. to 5 p.m., closed for lunch{src("loc")}, but its own Broward office rows list 8:00 a.m. to 5:00 p.m. with no lunch break{src("bro")}. Hours below are the office rows.</li>
 <li>Miami-Dade Tax Collector text says it has "assumed control of eight offices", yet its locations page lists 13 offices and FLHSMV links all 13 Miami-Dade driver license offices to the Tax Collector booking system{src("mdcdl","mdcloc","mia")}.</li>
@@ -56,22 +61,22 @@ CC={k:[r for r in recs if r['county']==v[0]] for k,v in COUNTIES.items()}
 b=f'''<h1>South Florida DMV: walk-in or appointment?</h1><p>Every driver license and ID card office in Broward, Miami-Dade and Palm Beach counties listed by FLHSMV on {D}{src("loc")}, with hours and the walk-in rule as each operator states it. {len(recs)} offices in total.</p>
 {fake('')}
 <div class="wrap"><table><tr><th>County</th><th>Offices</th><th>Who runs them</th><th>Walk-ins, as officially stated</th></tr>
-<tr><td>{a("counties/miami-dade/index.html","Miami-Dade")}</td><td>{len(CC["miami-dade"])}</td><td>County Tax Collector</td><td>Yes at Tax Collector offices during operating hours, plus a virtual walk-in queue; online appointments get priority{src("mdcdl","mdcvwblog")}</td></tr>
-<tr><td>{a("counties/broward/index.html","Broward")}</td><td>{len(CC["broward"])}</td><td>FLHSMV (4), Tax Collector (Lauderdale Lakes)</td><td>Not stated. FLHSMV says many offices require appointments{src("loc")}</td></tr>
-<tr><td>{a("counties/palm-beach/index.html","Palm Beach")}</td><td>{len(CC["palm-beach"])}</td><td>County Tax Collector</td><td>No. Reservation required, county residents only{src("pbres","pbc")}</td></tr></table></div>
-<h2>Skip the office if you can</h2><p>Many renewals and replacements can be done online at {a(S["mydmv"],"MyDMV Portal")}{src("mia","mdcdl")}. You must visit in person with documents for a first license or ID, if your card has no star, or after a legal name change{src("wtb")}. See {a("what-to-bring/index.html","what to bring")}.</p>
+<tr><td>{a("/counties/miami-dade/","Miami-Dade")}</td><td>{len(CC["miami-dade"])}</td><td>County Tax Collector</td><td>Yes at Tax Collector offices during operating hours, plus a virtual walk-in queue; online appointments get priority{src("mdcdl","mdcvwblog")}</td></tr>
+<tr><td>{a("/counties/broward/","Broward")}</td><td>{len(CC["broward"])}</td><td>FLHSMV (4), Tax Collector (Lauderdale Lakes)</td><td>Not stated. FLHSMV says many offices require appointments{src("loc")}</td></tr>
+<tr><td>{a("/counties/palm-beach/","Palm Beach")}</td><td>{len(CC["palm-beach"])}</td><td>County Tax Collector</td><td>No. Reservation required, county residents only{src("pbres","pbc")}</td></tr></table></div>
+<h2>Skip the office if you can</h2><p>Many renewals and replacements can be done online at {a(S["mydmv"],"MyDMV Portal")}{src("mia","mdcdl")}. You must visit in person with documents for a first license or ID, if your card has no star, or after a legal name change{src("wtb")}. See {a("/what-to-bring/","what to bring")}.</p>
 {CONF}
 <p>Need a U.S. passport instead? See the {a(S["passport"],"South Florida passport walk-in finder")}.</p>
 <p class="src">About community reports: we do not publish Reddit or social media wait-time reports, because they could not be verified against official sources.</p>'''
-s.page('index.html',"South Florida DMV walk-in vs appointment: Broward, Miami-Dade, Palm Beach","Which South Florida driver license and ID offices take walk-ins and which need appointments, with hours, addresses and official booking links.",b)
+s.page('index.html',"South Florida DMV walk-in vs appointment, by county","Which South Florida driver license and ID offices take walk-ins and which need appointments, with hours, addresses and official booking links.",b)
 for k,(short,full,sk) in COUNTIES.items():
     extra={'miami-dade':f'<div class="card note"><strong>Miami-Dade virtual walk-in.</strong> Arrive at the office, scan the posted QR code, register and receive a virtual appointment time; return 15 minutes before it to check in. Pre-booked online appointments always have priority{src("mdcvwblog")}. The virtual walk-in page asks you to verify your location before continuing{src("mdcvw")}. Hours: most Tax Collector offices Monday to Friday 8:00 a.m. to 5:00 p.m. and Saturday at select locations 8:00 a.m. to 1:00 p.m., except North Dade Justice{src("mdcdl")}. Driving tests and CDL only at selected offices{src("mdcdl")}.</div>',
      'broward':f'<div class="card note"><strong>Broward booking.</strong> State-run offices link to the {a(S["nemo"],"FLHSMV appointment system")}; Lauderdale Lakes links to {a(S["btcappt"],"appointments.browardtax.org")}, which is for Broward residents only and requires the name on the appointment to match your ID{src("bro","btcappt")}. State-run offices accept cash, check, Visa, MasterCard, Discover and American Express; knowledge exams with an interpreter are by appointment only{src("bro")}. The Tax Collector also runs DASH mobile units for select transactions such as standard renewals and replacements{src("btc")}.</div>',
      'palm-beach':f'<div class="card note"><strong>Palm Beach reservations.</strong> All Palm Beach offices are tax collector-sponsored; a tax collector service fee is added{src("pbc")}. A reservation is required for in-person service and is for Palm Beach County residents only; non-residents are pointed to FLHSMV locations{src("pbres")}. Customers who are not REAL ID compliant must schedule a reservation, and the office does not issue licenses or IDs to undocumented immigrants{src("pbtc")}.</div>'}[k]
     b=f'<h1>Driver license and ID offices in {full}: walk-in or appointment</h1><p>{len(CC[k])} offices offering driver license services, from the FLHSMV {full} page{src(sk)}. Motor vehicle only offices and license plate agents are not listed.</p>{fake("../../")}{extra}'+table(CC[k])+CONF
-    s.page(f'counties/{k}/index.html',f"{full} DMV offices: walk-in or appointment, hours, booking",f"Every driver license and ID office in {full} with address, hours, official walk-in policy and booking link.",b)
+    s.page(f'counties/{k}/index.html',f"{full} DMV offices: walk-in or appointment",f"Every driver license and ID office in {full} listed by FLHSMV, with address, hours, official walk-in policy and booking link.",b)
 b=f'<h1>Walk-in vs appointment at South Florida driver license offices</h1>{fake("../")}<h2>Offices where walk-ins are officially accepted</h2>'+table([r for r in recs if r['status']=='walk'])+'<h2>Appointment or reservation required</h2>'+table([r for r in recs if r['status']=='appt'])+'<h2>Appointment system linked, walk-in not stated</h2>'+table([r for r in recs if r['status']=='unclear'])+CONF
-s.page('walk-in-vs-appointment/index.html',"Which South Florida DMV offices take walk-ins","South Florida driver license offices grouped by official walk-in policy: walk-in accepted, reservation required, or not stated.",b)
+s.page('walk-in-vs-appointment/index.html',"Which South Florida DMV offices take walk-in visits","South Florida driver license offices grouped by official walk-in policy: walk-in accepted, reservation required, or not stated.",b)
 b=f'''<h1>What to bring for a Florida REAL ID driver license or ID card</h1><p>From the FLHSMV U.S. citizen checklist{src("usc")}. Non-citizens: see the {a(S["imm"],"immigrant")}, {a(S["nonimm"],"non-immigrant")} and {a(S["can"],"Canadian")} lists.</p>
 <div class="card"><p>You must visit an office with documents for your first license or ID, if your current card has no star, or if you legally changed your name since your last card{src("wtb")}. Once you have provided them, you only need them again if your information changes{src("wtb")}.</p></div>
 <h2>1. Primary identification (one original)</h2><div class="card"><ul><li>U.S. birth certificate (Puerto Rico certificates must be issued after July 1, 2010). Only county health department or CDC Bureau of Vital Statistics certificates; hospital certificates are not accepted.</li><li>Valid U.S. passport or passport card</li><li>Consular Report of Birth Abroad</li><li>Certificate of Naturalization (N-550 or N-570)</li><li>Certificate of Citizenship (N-560 or N-561)</li></ul>Bring marriage certificates, court orders or divorce decrees to link names, unless your valid U.S. passport shows your current name{src("usc")}.</div>
@@ -88,7 +93,7 @@ b=f'''<h1>Fake DMV appointment websites: book only on official sites</h1>{fake("
 <tr><td>Broward (state-run offices)</td><td>{a(S["nemo"],"nqapflhsmv.nemoqappointment.com")}</td><td>Linked from the FLHSMV Broward page{src("bro")}</td></tr>
 <tr><td>Palm Beach</td><td>{a(S["pbres"],"pbctax.gov/reservations")}</td><td>Palm Beach residents only{src("pbres")}</td></tr></table></div>
 <h2>How to protect yourself</h2><div class="card"><ul><li>Start from the agency home page ({a(S["loc"],"flhsmv.gov/locations")}, {a(S["mdc"],"mdctaxcollector.gov")}, {a(S["btc"],"browardtax.org")}, {a(S["pbtc"],"pbctax.gov")}) rather than a search ad.</li><li>The official systems above do not charge a booking fee on the pages we checked. If a site asks you to pay just to reserve a slot, leave.</li><li>If a confirmation looks odd, verify it directly with the office, as the Miami-Dade Tax Collector advises{src("mdc")}.</li><li>Use the exact name on your ID: Broward will not honor an appointment whose name does not match{src("btcappt")}.</li></ul></div>'''
-s.page('fake-appointment-sites/index.html',"Fake DMV appointment sites in South Florida: book only on official sites","Official warning about fake driver license appointment sites in Miami-Dade, and the only official booking pages for Broward, Miami-Dade and Palm Beach.",b)
+s.page('fake-appointment-sites/index.html',"Fake DMV appointment sites: book only on official sites","Official warning about fake driver license appointment sites in Miami-Dade, and the only official booking pages for Broward, Miami-Dade and Palm Beach.",b)
 faq=[("Can I walk in at a Miami-Dade DMV?",f"Yes at Tax Collector offices during operating hours, but online appointments have priority. Some offices use a virtual walk-in queue by QR code{src('mdcdl','mdcvwblog')}."),
 ("Can I walk in at a Palm Beach DMV?",f"No. The Palm Beach Tax Collector requires a reservation for in-person service, for county residents only{src('pbres')}."),
 ("Can I walk in at a Broward DMV?",f"Official pages do not say. FLHSMV links Broward offices to appointment systems and says many offices require appointments{src('loc','bro')}."),
@@ -96,6 +101,57 @@ faq=[("Can I walk in at a Miami-Dade DMV?",f"Yes at Tax Collector offices during
 ("Is it legal to buy a DMV appointment from someone?",f"No official site sells appointments. The Miami-Dade Tax Collector warns about unofficial appointment sites issuing invalid confirmations{src('mdc')}."),
 ("Can I renew online?",f"Many renewals and replacements can be done at MyDMV Portal; you can renew up to 18 months before expiry{src('mdcdl')}."),
 ("Do Saturday hours exist?",f"Yes at most Miami-Dade offices, 8:00 a.m. to 1:00 p.m. at select locations{src('mdcdl','mia')}. Broward and Palm Beach driver license offices list weekdays only{src('bro','pbc')}."),
-("What documents do I need for REAL ID?",f"One primary ID, one proof of SSN and two proofs of Florida address. See {a('../what-to-bring/index.html','what to bring')}{src('usc')}.")]
-s.page('faq/index.html',"South Florida DMV FAQ: walk-ins, appointments and REAL ID","Sourced answers about walk-ins, appointments, residency rules and REAL ID documents at South Florida driver license offices.",'<h1>South Florida DMV FAQ</h1>'+''.join(f'<div class="card"><strong>{q}</strong><p>{x}</p></div>' for q,x in faq))
+("What documents do I need for REAL ID?",f"One primary ID, one proof of SSN and two proofs of Florida address. See {a('/what-to-bring/','what to bring')}{src('usc')}.")]
+def plain(h): return re.sub(r'\s+',' ',re.sub(r'<[^>]+>','',h)).strip()
+def font(size,bold=False):
+    from PIL import ImageFont
+    names=["/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf","/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"] if bold else ["/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf","/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"]
+    for n in names:
+        if os.path.exists(n): return ImageFont.truetype(n,size)
+    raise SystemExit('No sans font found for the social image')
+def write_assets(out):
+    from PIL import Image,ImageDraw
+    svg='''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#123b5c"/><rect x="6" y="8" width="20" height="16" rx="2" fill="#f7f4ee"/><rect x="8" y="11" width="6" height="6" fill="#123b5c"/><rect x="16" y="12" width="8" height="2" fill="#d68910"/><rect x="16" y="16" width="8" height="2" fill="#9bb0c3"/><rect x="16" y="20" width="6" height="2" fill="#9bb0c3"/></svg>'''
+    open(os.path.join(out,'favicon.svg'),'w',encoding='utf-8').write(svg)
+    og=Image.new('RGB',(1200,630),'#123b5c'); d=ImageDraw.Draw(og)
+    d.rectangle((0,0,16,630),fill='#d68910')
+    fb,fs,fm=font(72,True),font(32),font(22)
+    d.text((72,150),'South Florida',font=fb,fill='#ffffff')
+    d.text((72,240),'DMV Walk-in Guide',font=fb,fill='#ffffff')
+    d.rectangle((72,360,420,366),fill='#d68910')
+    d.text((72,400),'Broward, Miami-Dade and Palm Beach',font=fs,fill='#d5e4f0')
+    d.text((72,470),'Unofficial independent guide',font=fm,fill='#f0d7a2')
+    for text,fnt in (('DMV Walk-in Guide',fb),('Broward, Miami-Dade and Palm Beach',fs)):
+        box=d.textbbox((0,0),text,font=fnt)
+        if box[2]-box[0]>1080: raise SystemExit('og text too wide: '+text)
+    og.save(os.path.join(out,'og.png'),'PNG')
+    ic=Image.new('RGB',(180,180),'#123b5c'); c=ImageDraw.Draw(ic)
+    c.rounded_rectangle((36,34,144,146),radius=8,fill='#f7f4ee')
+    c.rectangle((50,52,86,96),fill='#123b5c')
+    c.rectangle((96,58,130,66),fill='#d68910')
+    c.rectangle((96,76,130,84),fill='#9bb0c3')
+    c.rectangle((96,94,118,102),fill='#9bb0c3')
+    label='DMV'; lf=font(22,True); box=c.textbbox((0,0),label,font=lf)
+    c.text((90-(box[2]-box[0])/2,112),label,font=lf,fill='#123b5c')
+    ic.save(os.path.join(out,'apple-touch-icon.png'),'PNG')
+s.page('faq/index.html',"South Florida DMV FAQ: walk-ins, appointments and REAL ID","Sourced answers about walk-ins, appointments, residency rules and REAL ID documents at South Florida driver license offices.",'<h1>South Florida DMV FAQ</h1>'+''.join(f'<div class="card"><strong>{q}</strong><p>{x}</p></div>' for q,x in faq),faq=[(q,plain(x)) for q,x in faq])
+s.page('disclaimer/index.html',"Disclaimer for the South Florida DMV walk-in guide","Legal limits of this unofficial South Florida DMV walk-in guide: accuracy, no warranty, liability, external links, affiliation and official sources.",f'''<h1>Disclaimer</h1>
+<p>{esc(DISCLAIMER)}</p>
+<h2>Accuracy</h2>
+<p>Office names, addresses, hours, walk-in rules and booking links come from the official pages linked in each section, as of the check date at the top of the page. Official pages can change without notice. This guide can be incomplete, out of date or wrong.</p>
+<h2>No warranty</h2>
+<p>This guide is provided as is and as available. There is no warranty of any kind, express or implied, including any warranty of accuracy, completeness, timeliness or fitness for a particular purpose.</p>
+<h2>Limitation of liability</h2>
+<p>To the fullest extent allowed by law, we accept no liability for any loss, cost or inconvenience that results from using this site, or from being unable to use it. That includes a wasted trip, a missed reservation, a fee paid to anyone, a rejected document, or a decision you make from these pages.</p>
+<h2>External links are not endorsed</h2>
+<p>Links to agency sites, booking systems and other websites are provided for convenience. We do not run those sites and we do not endorse them. A link is not a promise that the other site is accurate, current or safe. Related guides in the footer are separate sites.</p>
+<h2>Not affiliated</h2>
+<p>This independent site is not affiliated with the Florida DHSMV, any county tax collector or any government agency. It is not an official booking channel. Agency names are used only so you can find the public source.</p>
+<h2>Check official sources</h2>
+<p>Always confirm hours, documents, residency rules, fees and booking steps with the official office before you act. Use only the official booking pages named in this guide.</p>
+<h2>Contact and corrections</h2>
+<p>This site has no contact form, phone line or appointment desk. We cannot book, change or cancel a visit for you. If something here looks wrong, treat the official page linked from that section as the source. Corrections to this guide are made by checking those official sources again.</p>''',crumb='Disclaimer')
+hubs=''.join(f'<li><a href="{esc(p)}">{esc(t)}</a></li>' for p,t in NAV)+'<li><a href="/disclaimer/">Disclaimer</a></li>'
+s.page('404.html',"Page not found on the South Florida DMV walk-in guide","This address is not a page in the South Florida DMV walk-in guide. Choose the home page, a county, walk-in rules, documents, fake sites or the FAQ.",f'<h1>Page not found</h1><p>That address is not a page on this guide. Try one of these:</p><ul>{hubs}</ul>',error=True,sitemap=False,crumb='Page not found')
+write_assets(s.out)
 s.finish(); print(len(s.pages),'pages',len(recs),'offices',{k:len(v) for k,v in CC.items()})
