@@ -31,8 +31,9 @@ class Site:
         elif len(parts)==2: joined=parts[0]+' and '+parts[1]
         else: joined=', '.join(parts[:-1])+' and '+parts[-1]
         return f'<p class="related"><strong>Related guides:</strong> {joined}.</p>'
-    def page(s,path,title,desc,body,faq=None,error=False,sitemap=True,crumb=None):
+    def page(s,path,title,desc,body,faq=None,error=False,sitemap=True,crumb=None,checked=None,lastmod=None):
         canon=s._canon(path); s._warn(path,title,desc); is_home=path=='index.html'
+        shown=checked or D; modified=lastmod or ISO
         nav=''.join(f'<a href="{esc(p)}">{esc(t)}</a>' for p,t in s.nav)
         verify=''.join(f'<meta name="{esc(k)}" content="{esc(v)}">' for k,v in s.verify.items() if v)
         robots='<meta name="robots" content="noindex">' if error else ''
@@ -52,7 +53,7 @@ class Site:
             graph.append({"@type":"Organization","@id":org,"name":s.brand,"url":s.base+"/","logo":{"@type":"ImageObject","url":s.base+"/apple-touch-icon.png"}})
         graph.append({"@type":"BreadcrumbList","@id":canon+"#breadcrumb","itemListElement":[{"@type":"ListItem","position":i,"name":name,"item":url} for i,(name,url) in enumerate(crumbs,1)]})
         if not is_home and not error:
-            graph.append({"@type":"Article","@id":canon+"#article","headline":title,"description":desc,"datePublished":ISO,"dateModified":ISO,"inLanguage":"en-US","mainEntityOfPage":canon,"image":img,"author":{"@type":"Organization","name":s.brand,"url":s.base+"/"},"publisher":{"@type":"Organization","name":s.brand,"url":s.base+"/","logo":{"@type":"ImageObject","url":s.base+"/apple-touch-icon.png"}}})
+            graph.append({"@type":"Article","@id":canon+"#article","headline":title,"description":desc,"datePublished":modified,"dateModified":modified,"inLanguage":"en-US","mainEntityOfPage":canon,"image":img,"author":{"@type":"Organization","name":s.brand,"url":s.base+"/"},"publisher":{"@type":"Organization","name":s.brand,"url":s.base+"/","logo":{"@type":"ImageObject","url":s.base+"/apple-touch-icon.png"}}})
         if faq:
             graph.append({"@type":"FAQPage","@id":canon+"#faq","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":ans}} for q,ans in faq]})
         ld=f'<script type="application/ld+json">{s._json({"@context":"https://schema.org","@graph":graph})}</script>'
@@ -62,15 +63,15 @@ class Site:
 <header><a class="brand" href="/">{esc(s.brand)}</a><nav>{nav}</nav></header>
 <div class="unofficial">Unofficial and independent guide. Not a government website.</div>
 {top}
-<main><p class="checked">Last checked: {D}</p>
+<main><p class="checked">Last checked: {shown}</p>
 {body}
-</main><footer>{s.footer} {disc}<p><a href="/disclaimer/">Disclaimer</a></p>{s._related()}<p>Last checked: {D}.</p></footer></body></html>'''
+</main><footer>{s.footer} {disc}<p><a href="/disclaimer/">Disclaimer</a></p>{s._related()}<p>Last checked: {shown}.</p></footer></body></html>'''
         for bad in ('\u2014','\u2013','&mdash;','&ndash;'): assert bad not in h,(path,bad)
         p=os.path.join(s.out,path); os.makedirs(os.path.dirname(p),exist_ok=True); open(p,'w',encoding='utf-8').write(h)
-        if sitemap: s.pages.append(path)
+        if sitemap: s.pages.append((path, modified))
     def finish(s):
         bots=['GPTBot','OAI-SearchBot','ChatGPT-User','PerplexityBot','Bingbot','Googlebot','ClaudeBot','*']
         open(os.path.join(s.out,'robots.txt'),'w',encoding='utf-8').write(''.join(f'User-agent: {b}\nAllow: /\n\n' for b in bots)+f'Sitemap: {s.base}/sitemap.xml\n')
-        open(os.path.join(s.out,'sitemap.xml'),'w',encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{s.base}/{p.replace("index.html","")}</loc><lastmod>{ISO}</lastmod></url>\n' for p in sorted(s.pages))+'</urlset>\n')
+        open(os.path.join(s.out,'sitemap.xml'),'w',encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{s.base}/{p.replace("index.html","")}</loc><lastmod>{mod}</lastmod></url>\n' for p,mod in sorted(s.pages))+'</urlset>\n')
         if s.warns: print(f'{s.warns} SEO length warnings',file=sys.stderr)
 CSS='''body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;color:#1a1a1a;line-height:1.55;background:#fafaf7}header{background:#123b5c;color:#fff;padding:.7rem 1rem;display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center}header a{color:#fff;text-decoration:none}.brand{font-weight:700}nav{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.95rem}nav a:hover{text-decoration:underline}.unofficial{background:#fff4d6;border-bottom:1px solid #e6cf8a;padding:.4rem 1rem;font-size:.9rem}.disclaimer{background:#f4f1ea;border-bottom:1px solid #e0d8c8;padding:.45rem 1rem;font-size:.88rem;margin:0}main{max-width:1100px;margin:0 auto;padding:1rem}h1{font-size:1.7rem;line-height:1.25}h2{margin-top:1.8rem}.checked{display:inline-block;background:#e6f2ea;border:1px solid #a9d1b5;border-radius:4px;padding:.15rem .5rem;font-size:.9rem}.card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:.8rem 1rem;margin:.8rem 0}.warn{border-left:6px solid #c0392b;background:#fdeeee}.note{border-left:6px solid #d68910;background:#fff8ec}.conf{border-left:6px solid #8e44ad;background:#f6effa}.wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;background:#fff;font-size:.93rem}th,td{border:1px solid #ddd;padding:.45rem;vertical-align:top;text-align:left}th{background:#eef3f7}.src{font-size:.85rem;color:#555}.tag{display:inline-block;font-size:.78rem;padding:0 .35rem;border-radius:3px;background:#eee;margin-right:.2rem}.tag.ok{background:#d8f0de}.tag.no{background:#f8d7d7}.tag.mix{background:#fdebc8}footer{max-width:1100px;margin:2rem auto;padding:1rem;font-size:.88rem;color:#444;border-top:1px solid #ddd}footer p{margin:.45rem 0}a{color:#0b5394}input#q{width:100%;max-width:420px;padding:.45rem;margin:.5rem 0;font-size:1rem}'''
