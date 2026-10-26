@@ -35,7 +35,7 @@ class Site:
         canon=s._canon(path); s._warn(path,title,desc); is_home=path=='index.html'
         shown=checked or D; modified=lastmod or ISO
         nav=''.join(f'<a href="{esc(p)}">{esc(t)}</a>' for p,t in s.nav)
-        verify=''.join(f'<meta name="{esc(k)}" content="{esc(v)}">' for k,v in s.verify.items() if v)
+        verify=''.join(f'<meta name="{esc(k)}" content="{esc(v)}" />' for k,v in s.verify.items() if v)
         robots='<meta name="robots" content="noindex">' if error else ''
         og_type='website' if (is_home or error) else 'article'
         img=s.base+'/og.png'

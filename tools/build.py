@@ -8,7 +8,7 @@ BASE="https://south-florida-dmv-walkin-guide.vercel.app"
 # Shown near the top of every page and in full in the footer.
 DISCLAIMER="For general information only. This independent site is not affiliated with the Florida DHSMV, any county tax collector or any government agency. Information can change and may contain errors; always confirm with the official office before you act. Nothing here is legal or professional advice, and we accept no liability for decisions made using it."
 # Optional. A non-empty value emits that meta tag. Leave empty to omit it.
-VERIFY={"google-site-verification":"","msvalidate.01":""}
+VERIFY={"google-site-verification":"XA7XgB_UwrIRvQyNVsnWpSyTyaU6e3-v4g4RBw8RAVI","msvalidate.01":""}
 RELATED=[("https://us-passport-walkin-finder.vercel.app/","South Florida passport walk-in finder"),("https://south-florida-dog-beaches.vercel.app/","South Florida dog beaches")]
 S=dict(loc="https://www.flhsmv.gov/locations/",bro="https://www.flhsmv.gov/locations/broward/",mia="https://www.flhsmv.gov/locations/miami-dade/",pbc="https://www.flhsmv.gov/locations/palm-beach/",
  nemo="https://nqapflhsmv.nemoqappointment.com",btc="https://browardtax.org/",btcappt="https://appointments.browardtax.org/",btcloc="https://browardtax.org/locations/",btcnews="https://browardtax.org/news/flow-driver-license-aug-2025/",
