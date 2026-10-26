@@ -6,4 +6,4 @@ Unofficial, independent guide to walk-in vs appointment rules at driver license 
 - `tools/build.py`: generator, writes `site/` and `tools/offices_parsed.json`. Walk-in policies come from each county tax collector site.
 - BASE: https://south-florida-dmv-walkin-guide.vercel.app
 
-Last checked: 21 Oct 2026.
+Last checked: 26 Oct 2026.

@@ -1,7 +1,7 @@
 """Shared helpers: page shell, robots.txt, sitemap.xml, checks. Copied per site so each folder is self-contained."""
 import os,html as H,shutil,sys,json
-D="21 Oct 2026"
-ISO="2026-10-21"
+D="26 Oct 2026"
+ISO="2026-10-26"
 def esc(s): return H.escape(s,quote=True)
 def a(url,text='source'): return f'<a href="{esc(url)}" rel="noopener">{text}</a>'
 class Site:

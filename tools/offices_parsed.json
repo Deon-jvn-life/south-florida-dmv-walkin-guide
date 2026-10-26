@@ -9,7 +9,7 @@
   ],
   "group": "DL",
   "op": "Broward County Tax Collector (tax collector-sponsored)",
-  "policy": "Appointment system run by the Broward County Tax Collector. Appointments are for Broward County residents only; the name on the appointment must match the ID shown at check-in <span class=\"src\">[<a href=\"https://appointments.browardtax.org/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official pages.",
+  "policy": "The Florida Department of Highway Safety and Motor Vehicles links this office to the Broward County Tax Collector appointment page <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/broward/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on that county page. A residency limit and a name-match rule could not be reconfirmed on 26 Oct 2026, so they are not stated here.",
   "status": "appt",
   "book": "https://appointments.browardtax.org/",
   "notes": [],
@@ -26,7 +26,7 @@
   ],
   "group": "DL",
   "op": "FLHSMV (state-run)",
-  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "policy": "The Florida Department of Highway Safety and Motor Vehicles links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
   "status": "unclear",
   "book": "https://nqapflhsmv.nemoqappointment.com",
   "notes": [
@@ -45,7 +45,7 @@
   ],
   "group": "DL",
   "op": "FLHSMV (state-run)",
-  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "policy": "The Florida Department of Highway Safety and Motor Vehicles links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
   "status": "unclear",
   "book": "https://nqapflhsmv.nemoqappointment.com",
   "notes": [],
@@ -62,7 +62,7 @@
   ],
   "group": "DL",
   "op": "FLHSMV (state-run)",
-  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "policy": "The Florida Department of Highway Safety and Motor Vehicles links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
   "status": "unclear",
   "book": "https://nqapflhsmv.nemoqappointment.com",
   "notes": [
@@ -81,7 +81,7 @@
   ],
   "group": "DL",
   "op": "FLHSMV (state-run)",
-  "policy": "FLHSMV links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
+  "policy": "The Florida Department of Highway Safety and Motor Vehicles links this office to its appointment system and says many offices require appointments <span class=\"src\">[<a href=\"https://www.flhsmv.gov/locations/\" rel=\"noopener\">source</a>]</span>. Walk-in service is not stated on the official page.",
   "status": "unclear",
   "book": "https://nqapflhsmv.nemoqappointment.com",
   "notes": [
@@ -100,8 +100,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "No Driving Exams"
@@ -119,8 +119,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "CDL HazMat"
@@ -138,7 +138,7 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>. This office was named in the Tax Collector virtual walk-in launch (scan the QR code at the office, get a virtual time, return 15 minutes before) <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>.",
+  "policy": "The Tax Collector virtual walk-in post names this office. Scan the posted QR code, get a virtual time, and return 15 minutes before it. Appointments booked online have priority <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>. The Tax Collector also says the offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>.",
   "status": "walk",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
@@ -157,8 +157,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "CDL HazMat"
@@ -176,8 +176,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "CDL HazMat"
@@ -195,8 +195,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "CDL HazMat"
@@ -214,8 +214,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "No Driving Exams"
@@ -233,7 +233,7 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>. This office was named in the Tax Collector virtual walk-in launch (scan the QR code at the office, get a virtual time, return 15 minutes before) <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>.",
+  "policy": "The Tax Collector virtual walk-in post names this office. Scan the posted QR code, get a virtual time, and return 15 minutes before it. Appointments booked online have priority <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>. The Tax Collector also says the offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>.",
   "status": "walk",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
@@ -252,8 +252,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "CDL HazMat"
@@ -271,7 +271,7 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>. This office was named in the Tax Collector virtual walk-in launch (scan the QR code at the office, get a virtual time, return 15 minutes before) <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>.",
+  "policy": "The Tax Collector virtual walk-in post names this office. Scan the posted QR code, get a virtual time, and return 15 minutes before it. Appointments booked online have priority <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>, <a href=\"https://app.mdctaxcollector.gov/virtual-walk-in\" rel=\"noopener\">source</a>]</span>. The Tax Collector also says the offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>.",
   "status": "walk",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
@@ -289,8 +289,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "No Written/Driving Exams"
@@ -308,8 +308,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "CDL HazMat"
@@ -326,8 +326,8 @@
   ],
   "group": "DL & MV",
   "op": "Miami-Dade County Tax Collector",
-  "policy": "Tax Collector says offices it manages take appointments or walk-in service during operating hours <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>]</span>. Appointments booked online have priority over walk-ins <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/blog/miami-dade-county-office-of-the-tax-collector-launches-innovative-virtual-walk-in-system-for-driver-license-and-id-services\" rel=\"noopener\">source</a>]</span>.",
-  "status": "walk",
+  "policy": "The Tax Collector says the offices it has taken over take appointments or walk-ins during operating hours, and that it has taken over eight offices. It does not name those eight. This office is on the Tax Collector locations list, and the state locations page links it to the Tax Collector booking system. Walk-in service is not stated for this office by name <span class=\"src\">[<a href=\"https://www.mdctaxcollector.gov/driver-license-and-id-card-services\" rel=\"noopener\">source</a>, <a href=\"https://www.mdctaxcollector.gov/locations\" rel=\"noopener\">source</a>, <a href=\"https://www.flhsmv.gov/locations/miami-dade/\" rel=\"noopener\">source</a>]</span>.",
+  "status": "gap",
   "book": "https://app.mdctaxcollector.gov/",
   "notes": [
    "No Written/Driving Exams"
