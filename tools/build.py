@@ -3,7 +3,7 @@
 Office list comes from tools/flhsmv_raw.json, parsed from the FLHSMV county location pages on the check date."""
 import json,os,sys,re
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE); sys.path.insert(0,HERE)
-from sitelib import Site,CSS,D,esc,a
+from sitelib import Site,CSS,D,esc,a,href,slug
 BASE="https://south-florida-dmv-walkin-guide.vercel.app"
 # Shown near the top of every page and in full in the footer.
 DISCLAIMER="For general information only. This independent site is not affiliated with the Florida DHSMV, any county tax collector or any government agency. Information can change and may contain errors; always confirm with the official office before you act. Nothing here is legal or professional advice, and we accept no liability for decisions made using it."
@@ -55,9 +55,74 @@ for r in raw:
     notes=[x for x in r['comments'] if x and 'MyDMV' not in x and 'mail correspondence' not in x and not x.startswith('PO Box') and 'Residents Only' not in x and 'By Reservation' not in x]
     recs.append(dict(county=c,name=nm,address=r['address'],phone=r['phone'],hours=r['hours'],group=r['group'],op=op,policy=pol,status=st,book=book,notes=notes,tc=tc))
 json.dump(recs,open(os.path.join(HERE,'offices_parsed.json'),'w'),indent=1)
-NAV=[('/','Home')]+[(f'/counties/{k}/',v[0]) for k,v in COUNTIES.items()]+[('/walk-in-vs-appointment/','Walk-in vs appointment'),('/what-to-bring/','What to bring'),('/new-to-florida/','New to Florida'),('/fake-appointment-sites/','Fake appointment sites'),('/faq/','FAQ')]
+G=[("County offices",[('counties/broward/index.html','Broward offices'),('counties/miami-dade/index.html','Miami-Dade offices'),('counties/palm-beach/index.html','Palm Beach offices')]),
+ ("Before your visit",[('walk-in-vs-appointment/index.html','Walk-in or appointment'),('what-to-bring/index.html','What to bring'),('new-to-florida/index.html','New to Florida')]),
+ ("Stay safe",[('fake-appointment-sites/index.html','Fake appointment sites'),('faq/index.html','Common questions')]),
+ ("Using this guide",[('find/index.html','All pages'),('disclaimer/index.html','Disclaimer')])]
+# One plain-language line per page. Same meaning as the page itself. Abbreviations are written out.
+BLURB={
+ 'counties/broward/index.html':'Every driver license and identification office in Broward County listed by the Florida Department of Highway Safety and Motor Vehicles, with address, hours, the official walk-in policy, and the booking link.',
+ 'counties/miami-dade/index.html':'Every driver license and identification office in Miami-Dade County listed by the Florida Department of Highway Safety and Motor Vehicles, with address, hours, the official walk-in policy, and the booking link.',
+ 'counties/palm-beach/index.html':'Every driver license and identification office in Palm Beach County listed by the Florida Department of Highway Safety and Motor Vehicles, with address, hours, the official walk-in policy, and the booking link.',
+ 'walk-in-vs-appointment/index.html':'South Florida driver license offices grouped by the official walk-in policy: walk-in accepted, reservation required, or not stated.',
+ 'what-to-bring/index.html':'The Florida Department of Highway Safety and Motor Vehicles REAL ID document list for United States citizens: identity, Social Security, and two proofs of a Florida address, plus name change rules.',
+ 'new-to-florida/index.html':'Deadline, documents, exam rules, and fees for transferring an out-of-state or foreign license in Broward, Miami-Dade, or Palm Beach.',
+ 'fake-appointment-sites/index.html':'Official warning about fake driver license appointment sites in Miami-Dade, and the only official booking pages for Broward, Miami-Dade and Palm Beach.',
+ 'faq/index.html':'Sourced answers about walk-ins, appointments, residency rules and REAL ID documents at South Florida driver license offices.',
+ 'find/index.html':'Every page on this guide, listed by topic.',
+ 'disclaimer/index.html':'Legal limits of this unofficial South Florida driver license walk-in guide: accuracy, no warranty, liability, external links, affiliation, and official sources.'}
+ALIAS={
+ 'counties/broward/index.html':'Broward DMV FLHSMV office hours appointment Lauderdale Lakes',
+ 'counties/miami-dade/index.html':'Miami-Dade DMV virtual walk-in tax collector offices',
+ 'counties/palm-beach/index.html':'Palm Beach DMV reservation residents only',
+ 'walk-in-vs-appointment/index.html':'walk-in versus appointment reservation required',
+ 'what-to-bring/index.html':'REAL ID documents SSN Social Security proof of address',
+ 'new-to-florida/index.html':'new resident transfer out of state foreign license fees',
+ 'fake-appointment-sites/index.html':'fake scam appointment booking official',
+ 'faq/index.html':'FAQ questions walk-in Saturday holiday renew',
+ 'find/index.html':'search index all pages',
+ 'disclaimer/index.html':'disclaimer liability not a government website'}
+SEQ=[
+ ['counties/broward/index.html','counties/miami-dade/index.html','counties/palm-beach/index.html'],
+ ['walk-in-vs-appointment/index.html','what-to-bring/index.html','new-to-florida/index.html']]
+READ_NEXT={
+ 'index.html':['walk-in-vs-appointment/index.html','what-to-bring/index.html','fake-appointment-sites/index.html'],
+ 'counties/broward/index.html':['counties/miami-dade/index.html','counties/palm-beach/index.html','walk-in-vs-appointment/index.html'],
+ 'counties/miami-dade/index.html':['counties/broward/index.html','counties/palm-beach/index.html','walk-in-vs-appointment/index.html'],
+ 'counties/palm-beach/index.html':['counties/broward/index.html','counties/miami-dade/index.html','walk-in-vs-appointment/index.html'],
+ 'walk-in-vs-appointment/index.html':['what-to-bring/index.html','new-to-florida/index.html','fake-appointment-sites/index.html'],
+ 'what-to-bring/index.html':['new-to-florida/index.html','walk-in-vs-appointment/index.html','fake-appointment-sites/index.html'],
+ 'new-to-florida/index.html':['what-to-bring/index.html','walk-in-vs-appointment/index.html','counties/miami-dade/index.html'],
+ 'fake-appointment-sites/index.html':['walk-in-vs-appointment/index.html','what-to-bring/index.html','faq/index.html'],
+ 'faq/index.html':['fake-appointment-sites/index.html','walk-in-vs-appointment/index.html','what-to-bring/index.html'],
+ 'find/index.html':['walk-in-vs-appointment/index.html','faq/index.html','disclaimer/index.html'],
+ 'disclaimer/index.html':['find/index.html','faq/index.html','fake-appointment-sites/index.html'],
+ '404.html':['walk-in-vs-appointment/index.html','find/index.html','faq/index.html']}
 FOOT=f'Unofficial, independent guide. Not affiliated with FLHSMV or any county tax collector. We do not sell appointments, and nobody legitimately can: book only on {a(S["loc"],"flhsmv.gov")}, {a(S["mdc"],"mdctaxcollector.gov")}, {a(S["btc"],"browardtax.org")} or {a(S["pbtc"],"pbctax.gov")}. Office data from the FLHSMV county location pages; policies from each tax collector site.'
-s=Site(ROOT,BASE,"South Florida DMV Walk-in Guide",NAV,FOOT,CSS,related=RELATED,verify=VERIFY,disclaimer=DISCLAIMER)
+s=Site(ROOT,BASE,"South Florida DMV Walk-in Guide",G,FOOT,CSS,sequences=SEQ,summaries=BLURB,read_next=READ_NEXT,aliases=ALIAS,related=RELATED,verify=VERIFY,disclaimer=DISCLAIMER)
+LABELS={p:t for g,items in G for p,t in items}
+grouped=[p for g,items in G for p,t in items]
+assert set(BLURB)==set(grouped)
+assert set(ALIAS)==set(grouped)
+assert set(READ_NEXT)==set(grouped)|{'index.html','404.html'}
+for dests in READ_NEXT.values():
+    assert len(dests)==3
+    for dest in dests:
+        assert dest in s.titles, dest
+def jump(path):
+    return f'<a class="jump" href="{href(path)}"><span class="lt">{esc(LABELS[path])}</span><span class="ls">{esc(BLURB[path])}</span></a>'
+def link_list(paths):
+    return '<ul class="link-grid">'+''.join(f'<li>{jump(p)}</li>' for p in paths)+'</ul>'
+START=[("Check the walk-in rule",['walk-in-vs-appointment/index.html']),
+ ("Open your county",['counties/broward/index.html','counties/miami-dade/index.html','counties/palm-beach/index.html']),
+ ("Get your documents ready",['what-to-bring/index.html','new-to-florida/index.html']),
+ ("Book on an official page",['fake-appointment-sites/index.html'])]
+start_here='<h2>Start here</h2><p>Use these steps to find the page you need.</p><ol class="timeline">'+''.join(
+ f'<li class="period"><h3>{esc(title)}</h3><ol class="period-pages">'+''.join(f'<li>{jump(p)}</li>' for p in paths)+'</ol></li>' for title,paths in START)+'</ol>'
+TOP=['walk-in-vs-appointment/index.html','what-to-bring/index.html','counties/miami-dade/index.html','counties/broward/index.html','counties/palm-beach/index.html','fake-appointment-sites/index.html','new-to-florida/index.html','faq/index.html']
+top_tasks='<h2>Top tasks</h2><p>The pages people open most often. Each link goes to one page.</p>'+link_list(TOP).replace('class="link-grid"','class="tasks"',1)
+all_topics='<h2>All topics</h2><p>Every page on this guide, grouped by subject.</p>'+''.join(
+ f'<section class="topic"><h3 id="{slug(g)}">{esc(g)}</h3>'+link_list([p for p,t in items])+'</section>' for g,items in G)
 FAKE=f'<div class="card warn"><strong>Warning: fake appointment websites.</strong> The Miami-Dade Tax Collector warns residents about unofficial appointment websites issuing invalid confirmations, and says to schedule only through mdctaxcollector.gov and verify any questionable appointment directly with the office{src("mdc")}. Book only on the official sites: {a(S["mdcappt"],"app.mdctaxcollector.gov")} (Miami-Dade), {a(S["btcappt"],"appointments.browardtax.org")} or {a(S["nemo"],"the Florida Department of Highway Safety and Motor Vehicles appointment system")} (Broward), {a(S["pbres"],"pbctax.gov/reservations")} (Palm Beach). Do not pay a third party for a slot. The Tax Collector says an appointment should be free and that residents should not pay an unregulated third party for one{src("scalp")}. {a("/fake-appointment-sites/","How to spot a fake")}.</div>'
 def fake(r): return FAKE
 CONF=f'''<div class="card conf"><strong>Conflicts and gaps in official sources ({D})</strong><ul>
@@ -68,15 +133,21 @@ CONF=f'''<div class="card conf"><strong>Conflicts and gaps in official sources (
 <li>Broward: a Tax Collector news post dated 23 May 2026 says the office prepares to take over driver license services in summer 2026{src("btcnews")}. Event notes on its home page on {D} say the office will lead local driver license services beginning 2026. The same home page says its offices will be closed on 28 Oct 2026 for a Professional Development Day, and it also lists an early close that day at 11:30 a.m.{src("btc")}. The Tax Collector locations page lists Fort Lauderdale (115 S. Andrews Ave), Plantation and Lauderdale Lakes{src("btcloc")}. The state page lists Plantation as motor vehicle services only and does not list 115 S. Andrews Ave{src("bro")}.</li>
 <li>Virtual walk-in: the Miami-Dade launch post (May 2025) names three offices. No current official list of all participating offices was found{src("mdcvwblog")}.</li></ul></div>'''
 TAGS={'walk':'<span class="tag ok">walk-in accepted (official)</span>','appt':'<span class="tag no">appointment or reservation required</span>','unclear':'<span class="tag mix">appointments; walk-in not stated</span>','gap':'<span class="tag mix">walk-in not confirmed by name</span>'}
+_filter_n=0
 def table(rows):
-    t='<input id="q" placeholder="Filter by city or name" oninput="var v=this.value.toLowerCase();document.querySelectorAll(\'table tr\').forEach(function(r){if(r.querySelector(\'td\'))r.style.display=r.textContent.toLowerCase().indexOf(v)>-1?\'\':\'none\'})"><div class="wrap"><table><tr><th>Office</th><th>Address and phone</th><th>Hours (FLHSMV listing)</th><th>Walk-in policy as officially stated</th><th>Official booking</th></tr>'
+    global _filter_n
+    _filter_n+=1
+    fid=f'office-filter-{_filter_n}'
+    t=f'<div class="filter-block"><label for="{fid}">Filter by city or name</label><input id="{fid}" class="office-filter" type="search" autocomplete="off" oninput="var v=this.value.toLowerCase();this.closest(\'.filter-block\').querySelectorAll(\'table tr\').forEach(function(r){{if(r.querySelector(\'td\'))r.style.display=r.textContent.toLowerCase().indexOf(v)>-1?\'\':\'none\'}})"><div class="wrap"><table><tr><th>Office</th><th>Address and phone</th><th>Hours (FLHSMV listing)</th><th>Walk-in policy as officially stated</th><th>Official booking</th></tr>'
     for r in rows:
         n=('<br><span class="src">'+esc('; '.join(r['notes']))+'</span>') if r['notes'] else ''
         t+=f'<tr><td><strong>{esc(r["name"])}</strong><br><span class="src">{esc(r["group"])} services. {esc(r["op"])}</span>{n}</td><td>{esc(r["address"])}<br>{esc(r["phone"])}</td><td>{"<br>".join(esc(h) for h in r["hours"])}</td><td>{TAGS[r["status"]]}<br>{r["policy"]}</td><td>{a(r["book"],"Book (official)") if r["book"] else "Not linked"}</td></tr>'
-    return t+'</table></div>'
+    return t+'</table></div></div>'
 CC={k:[r for r in recs if r['county']==v[0]] for k,v in COUNTIES.items()}
 b=f'''<h1>South Florida DMV: walk-in or appointment?</h1><p>Every driver license and ID card office in Broward, Miami-Dade and Palm Beach counties listed by FLHSMV on {D}{src("loc")}, with hours and the walk-in rule as each operator states it. {len(recs)} offices in total.</p>
 {fake('')}
+{start_here}
+{top_tasks}
 <div class="wrap"><table><tr><th>County</th><th>Offices</th><th>Who runs them</th><th>Walk-ins, as officially stated</th></tr>
 <tr><td>{a("/counties/miami-dade/","Miami-Dade")}</td><td>{len(CC["miami-dade"])}</td><td>County Tax Collector</td><td>Stated for offices the Tax Collector has taken over. It says that is eight offices and does not name them. A May 2025 post names three offices for a virtual walk-in queue. Online appointments have priority{src("mdcdl","mdcvwblog")}</td></tr>
 <tr><td>{a("/counties/broward/","Broward")}</td><td>{len(CC["broward"])}</td><td>State department (4), Tax Collector (Lauderdale Lakes)</td><td>Not stated. The state department says many offices require appointments{src("loc")}</td></tr>
@@ -85,7 +156,8 @@ b=f'''<h1>South Florida DMV: walk-in or appointment?</h1><p>Every driver license
 <p>Moving from another state or country? {a("/new-to-florida/","Transferring an out-of-state or foreign license")} covers the deadline, documents, tests, and fees, including where the official sources disagree.</p>
 {CONF}
 <p>Need a U.S. passport instead? See the {a(S["passport"],"South Florida passport walk-in finder")}.</p>
-<p class="src">About community reports: we do not publish Reddit or social media wait-time reports, because they could not be verified against official sources.</p>'''
+<p class="src">About community reports: we do not publish Reddit or social media wait-time reports, because they could not be verified against official sources.</p>
+{all_topics}'''
 s.page('index.html',"South Florida DMV walk-in vs appointment, by county","Which South Florida driver license and ID offices take walk-ins and which need appointments, with hours, addresses and official booking links.",b)
 for k,(short,full,sk) in COUNTIES.items():
     extra={'miami-dade':f'<div class="card note"><strong>Miami-Dade virtual walk-in.</strong> Arrive at the office, scan the posted QR code, register and receive a virtual appointment time, and return 15 minutes before it to check in. Pre-booked online appointments always have priority{src("mdcvwblog")}. The virtual walk-in page says to verify your location to continue{src("mdcvw")}. Hours: most Tax Collector offices Monday to Friday 8:00 a.m. to 5:00 p.m. and Saturday at select locations 8:00 a.m. to 1:00 p.m., except North Dade Justice{src("mdcdl")}. Driving tests and commercial driver licenses only at selected offices{src("mdcdl")}.</div>',
@@ -199,28 +271,32 @@ def font(size,bold=False):
     raise SystemExit('No sans font found for the social image')
 def write_assets(out):
     from PIL import Image,ImageDraw
-    svg='''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#123b5c"/><rect x="6" y="8" width="20" height="16" rx="2" fill="#f7f4ee"/><rect x="8" y="11" width="6" height="6" fill="#123b5c"/><rect x="16" y="12" width="8" height="2" fill="#d68910"/><rect x="16" y="16" width="8" height="2" fill="#9bb0c3"/><rect x="16" y="20" width="6" height="2" fill="#9bb0c3"/></svg>'''
+    svg='''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#0A4550"/><circle cx="16" cy="11" r="4.2" fill="#F6D98A"/><path d="M3 21c3.2 2.2 6.4-2.2 9.6 0s6.4-2.2 9.6 0 6.4-2.2 9.6 0" fill="none" stroke="#F6D98A" stroke-width="1.7" stroke-linecap="round"/><path d="M3 26c3.2 2.2 6.4-2.2 9.6 0s6.4-2.2 9.6 0 6.4-2.2 9.6 0" fill="none" stroke="#F4EFE4" stroke-width="1.7" stroke-linecap="round"/></svg>'''
     open(os.path.join(out,'favicon.svg'),'w',encoding='utf-8').write(svg)
-    og=Image.new('RGB',(1200,630),'#123b5c'); d=ImageDraw.Draw(og)
-    d.rectangle((0,0,16,630),fill='#d68910')
+    og=Image.new('RGB',(1200,630),'#0A4550'); d=ImageDraw.Draw(og)
+    px=og.load()
+    def mix(a,b,t):
+        def ch(h,i): return int(h[i:i+2],16)
+        return tuple(round(ch(a,i)*(1-t)+ch(b,i)*t) for i in (0,2,4))
+    for x in range(1200):
+        t=x/1199
+        rgb=mix('0A4550','0E3A58',t/0.52) if t<0.52 else mix('0E3A58','3A3040',(t-0.52)/0.48)
+        for y in range(630): px[x,y]=rgb
+    d.rectangle((0,0,16,630),fill='#F6D98A')
     fb,fs,fm=font(72,True),font(32),font(22)
     d.text((72,150),'South Florida',font=fb,fill='#ffffff')
     d.text((72,240),'DMV Walk-in Guide',font=fb,fill='#ffffff')
-    d.rectangle((72,360,420,366),fill='#d68910')
-    d.text((72,400),'Broward, Miami-Dade and Palm Beach',font=fs,fill='#d5e4f0')
-    d.text((72,470),'Unofficial independent guide',font=fm,fill='#f0d7a2')
+    d.rectangle((72,360,420,366),fill='#F6D98A')
+    d.text((72,400),'Broward, Miami-Dade and Palm Beach',font=fs,fill='#F4EFE4')
+    d.text((72,470),'Unofficial independent guide',font=fm,fill='#F6D98A')
     for text,fnt in (('DMV Walk-in Guide',fb),('Broward, Miami-Dade and Palm Beach',fs)):
         box=d.textbbox((0,0),text,font=fnt)
         if box[2]-box[0]>1080: raise SystemExit('og text too wide: '+text)
     og.save(os.path.join(out,'og.png'),'PNG')
-    ic=Image.new('RGB',(180,180),'#123b5c'); c=ImageDraw.Draw(ic)
-    c.rounded_rectangle((36,34,144,146),radius=8,fill='#f7f4ee')
-    c.rectangle((50,52,86,96),fill='#123b5c')
-    c.rectangle((96,58,130,66),fill='#d68910')
-    c.rectangle((96,76,130,84),fill='#9bb0c3')
-    c.rectangle((96,94,118,102),fill='#9bb0c3')
-    label='DMV'; lf=font(22,True); box=c.textbbox((0,0),label,font=lf)
-    c.text((90-(box[2]-box[0])/2,112),label,font=lf,fill='#123b5c')
+    ic=Image.new('RGB',(180,180),'#0A4550'); c=ImageDraw.Draw(ic)
+    c.ellipse((66,28,114,76),fill='#F6D98A')
+    c.arc((22,86,158,150),200,340,fill='#F6D98A',width=10)
+    c.arc((22,112,158,176),200,340,fill='#F4EFE4',width=10)
     ic.save(os.path.join(out,'apple-touch-icon.png'),'PNG')
 s.page('faq/index.html',"South Florida DMV FAQ: walk-ins, appointments and REAL ID","Sourced answers about walk-ins, appointments, residency rules and REAL ID documents at South Florida driver license offices.",'<h1>South Florida DMV FAQ</h1>'+''.join(f'<div class="card"><strong>{q}</strong><p>{x}</p></div>' for q,x in faq),faq=[(q,plain(x)) for q,x in faq])
 s.page('disclaimer/index.html',"Disclaimer for the South Florida DMV walk-in guide","Legal limits of this unofficial South Florida DMV walk-in guide: accuracy, no warranty, liability, external links, affiliation and official sources.",f'''<h1>Disclaimer</h1>
@@ -239,7 +315,13 @@ s.page('disclaimer/index.html',"Disclaimer for the South Florida DMV walk-in gui
 <p>Always confirm hours, documents, residency rules, fees and booking steps with the official office before you act. Use only the official booking pages named in this guide.</p>
 <h2>Contact and corrections</h2>
 <p>This site has no contact form, phone line or appointment desk. We cannot book, change or cancel a visit for you. If something here looks wrong, treat the official page linked from that section as the source. Corrections to this guide are made by checking those official sources again.</p>''',crumb='Disclaimer')
-hubs=''.join(f'<li><a href="{esc(p)}">{esc(t)}</a></li>' for p,t in NAV)+'<li><a href="/disclaimer/">Disclaimer</a></li>'
+find_title="Find a page in the South Florida DMV walk-in guide"
+find_desc="Search or browse every page in this independent South Florida driver license walk-in guide, including county offices, documents, and booking warnings."
+find_body='<h1>All pages</h1><p>Type in the search box at the top of this page. The list below stays complete if search is not available.</p><p id="index-status" class="index-status" aria-live="polite">Showing every page.</p><div id="page-index">'+''.join(
+ f'<section><h2>{esc(g)}</h2><ul class="index-list">'+''.join(
+  f'<li data-keywords="{esc(ALIAS[p])}"><a class="jump" href="{href(p)}"><span class="lt">{esc(t)}</span><span class="ls">{esc(BLURB[p])}</span></a></li>' for p,t in items)+'</ul></section>' for g,items in G)+'</div>'
+s.page('find/index.html',find_title,find_desc,find_body)
+hubs='<li><a href="/">Home</a></li>'+''.join(f'<li><a href="{href(p)}">{esc(t)}</a></li>' for g,items in G for p,t in items)
 s.page('404.html',"Page not found on the South Florida DMV walk-in guide","This address is not a page in the South Florida DMV walk-in guide. Choose the home page, a county, walk-in rules, documents, fake sites or the FAQ.",f'<h1>Page not found</h1><p>That address is not a page on this guide. Try one of these:</p><ul>{hubs}</ul>',error=True,sitemap=False,crumb='Page not found')
 write_assets(s.out)
 s.finish(); print(len(s.pages),'pages',len(recs),'offices',{k:len(v) for k,v in CC.items()})
