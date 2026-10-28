@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the South Florida driver license walk-in vs appointment guide into site/. Run: python3 tools/build.py
 Office list comes from tools/flhsmv_raw.json, parsed from the FLHSMV county location pages on the check date."""
-import json,os,sys,re
+import json,os,sys,re,shutil,urllib.parse
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE); sys.path.insert(0,HERE)
 from sitelib import Site,CSS,D,esc,a,href,slug
 BASE="https://south-florida-dmv-walkin-guide.vercel.app"
@@ -133,6 +133,47 @@ CONF=f'''<div class="card conf"><strong>Conflicts and gaps in official sources (
 <li>Broward: a Tax Collector news post dated 23 May 2026 says the office prepares to take over driver license services in summer 2026{src("btcnews")}. Event notes on its home page on {D} say the office will lead local driver license services beginning 2026. The same home page says its offices will be closed on 28 Oct 2026 for a Professional Development Day, and it also lists an early close that day at 11:30 a.m.{src("btc")}. The Tax Collector locations page lists Fort Lauderdale (115 S. Andrews Ave), Plantation and Lauderdale Lakes{src("btcloc")}. The state page lists Plantation as motor vehicle services only and does not list 115 S. Andrews Ave{src("bro")}.</li>
 <li>Virtual walk-in: the Miami-Dade launch post (May 2025) names three offices. No current official list of all participating offices was found{src("mdcvwblog")}.</li></ul></div>'''
 TAGS={'walk':'<span class="tag ok">walk-in accepted (official)</span>','appt':'<span class="tag no">appointment or reservation required</span>','unclear':'<span class="tag mix">appointments; walk-in not stated</span>','gap':'<span class="tag mix">walk-in not confirmed by name</span>'}
+def load_coords():
+    data=json.load(open(os.path.join(HERE,'office_coords.json')))
+    found={}
+    for row in data['offices']:
+        key=(row['county'],row['name'],row['address'])
+        if key in found: raise SystemExit('Duplicate coordinate record for '+row['name'])
+        lat,lon=row.get('lat'),row.get('lon')
+        if lat is None or lon is None:
+            if not row.get('reason'): raise SystemExit('Unpinned office needs a reason: '+row['name'])
+        else:
+            if type(lat) not in (int,float) or type(lon) not in (int,float): raise SystemExit('Bad coordinates for '+row['name'])
+            if not (25.2<=float(lat)<=27.3 and -80.95<=float(lon)<=-79.9): raise SystemExit('Coordinates outside South Florida for '+row['name'])
+            if not row.get('osm_id') or not row.get('matched'): raise SystemExit('Pinned office needs an OSM id and a match note: '+row['name'])
+        found[key]=row
+    return found
+COORDS=load_coords()
+def pin_row(r):
+    row=COORDS.get((r['county'],r['name'],r['address']))
+    if row is None: raise SystemExit('No coordinate record for '+r['county']+' '+r['name'])
+    if row.get('lat') is None or row.get('lon') is None: return None
+    return row
+for _r in recs: pin_row(_r)
+def directions_url(address):
+    return 'https://www.google.com/maps/dir/?api=1&destination='+urllib.parse.quote(address,safe='')
+def directions_link(r):
+    url=directions_url(r['address'])
+    return f'<a href="{esc(url)}" target="_blank" rel="noopener">Get directions<span class="sr-only"> to {esc(r["name"])}, {esc(r["address"])} (opens in a new tab)</span></a>'
+def map_block(rows,title,label):
+    pins=[]
+    for r in rows:
+        row=pin_row(r)
+        if not row: continue
+        pins.append({'name':r['name'],'address':r['address'],'lat':row['lat'],'lon':row['lon'],'directions':directions_url(r['address'])})
+    if not pins: return ''
+    note_id=slug(title)+'-note'
+    payload=json.dumps(pins,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
+    note='The list above is the full set of addresses. The map is an extra view. A pin is shown only when the official street address could be placed. Offices that are very close share one pin until you zoom in, and that pin lists each office. Choose a pin to read the name and address. Scrolling the page does not zoom the map. Click the map if you want the scroll wheel to zoom.'
+    return (f'<section class="map-block"><h2>{esc(title)}</h2><p id="{note_id}">{esc(note)}</p>'
+        f'<div class="map-frame"><div class="office-map" role="region" tabindex="-1" aria-label="{esc(label)}" data-label="{esc(label)}" aria-describedby="{note_id}" data-pins="{esc(payload)}">'
+        f'<p class="map-fallback">The map is not available. Every address is in the list above.</p></div></div></section>'
+        f'<script src="/map.js" defer></script>')
 _filter_n=0
 def table(rows):
     global _filter_n
@@ -141,7 +182,7 @@ def table(rows):
     t=f'<div class="filter-block"><label for="{fid}">Filter by city or name</label><input id="{fid}" class="office-filter" type="search" autocomplete="off" oninput="var v=this.value.toLowerCase();this.closest(\'.filter-block\').querySelectorAll(\'table tr\').forEach(function(r){{if(r.querySelector(\'td\'))r.style.display=r.textContent.toLowerCase().indexOf(v)>-1?\'\':\'none\'}})"><div class="wrap"><table><tr><th>Office</th><th>Address and phone</th><th>Hours (FLHSMV listing)</th><th>Walk-in policy as officially stated</th><th>Official booking</th></tr>'
     for r in rows:
         n=('<br><span class="src">'+esc('; '.join(r['notes']))+'</span>') if r['notes'] else ''
-        t+=f'<tr><td><strong>{esc(r["name"])}</strong><br><span class="src">{esc(r["group"])} services. {esc(r["op"])}</span>{n}</td><td>{esc(r["address"])}<br>{esc(r["phone"])}</td><td>{"<br>".join(esc(h) for h in r["hours"])}</td><td>{TAGS[r["status"]]}<br>{r["policy"]}</td><td>{a(r["book"],"Book (official)") if r["book"] else "Not linked"}</td></tr>'
+        t+=f'<tr><td><strong>{esc(r["name"])}</strong><br><span class="src">{esc(r["group"])} services. {esc(r["op"])}</span>{n}</td><td>{esc(r["address"])}<br>{directions_link(r)}<br>{esc(r["phone"])}</td><td>{"<br>".join(esc(h) for h in r["hours"])}</td><td>{TAGS[r["status"]]}<br>{r["policy"]}</td><td>{a(r["book"],"Book (official)") if r["book"] else "Not linked"}</td></tr>'
     return t+'</table></div></div>'
 CC={k:[r for r in recs if r['county']==v[0]] for k,v in COUNTIES.items()}
 b=f'''<h1>South Florida DMV: walk-in or appointment?</h1><p>Every driver license and ID card office in Broward, Miami-Dade and Palm Beach counties listed by FLHSMV on {D}{src("loc")}, with hours and the walk-in rule as each operator states it. {len(recs)} offices in total.</p>
@@ -163,9 +204,9 @@ for k,(short,full,sk) in COUNTIES.items():
     extra={'miami-dade':f'<div class="card note"><strong>Miami-Dade virtual walk-in.</strong> Arrive at the office, scan the posted QR code, register and receive a virtual appointment time, and return 15 minutes before it to check in. Pre-booked online appointments always have priority{src("mdcvwblog")}. The virtual walk-in page says to verify your location to continue{src("mdcvw")}. Hours: most Tax Collector offices Monday to Friday 8:00 a.m. to 5:00 p.m. and Saturday at select locations 8:00 a.m. to 1:00 p.m., except North Dade Justice{src("mdcdl")}. Driving tests and commercial driver licenses only at selected offices{src("mdcdl")}.</div>',
      'broward':f'<div class="card note"><strong>Broward booking.</strong> State-run offices link to the {a(S["nemo"],"Florida Department of Highway Safety and Motor Vehicles appointment system")}. Lauderdale Lakes links to {a(S["btcappt"],"appointments.browardtax.org")}{src("bro")}. A residency limit and a name-match rule on that appointment page could not be reconfirmed on {D}, so they are not stated here. State-run offices accept cash, check, Visa, MasterCard, Discover Card, and American Express. A knowledge exam with an interpreter is by appointment only and is limited to one attempt per day{src("bro")}. On the Tax Collector home page, Driver Assistance Service Hub (DASH) events list these select transactions: standard driver license renewals, replacement licenses for lost, stolen, or damaged cards, address updates, name changes, and identification card issuance. Those notes say no walk-ins are accepted and the service is reserved for Broward County residents only{src("btc")}. That home page also says its offices will be closed on 28 Oct 2026 for a Professional Development Day, and it lists an early close that day at 11:30 a.m.{src("btc")}.</div>',
      'palm-beach':f'<div class="card note"><strong>Palm Beach reservations.</strong> All Palm Beach offices are tax collector-sponsored; a tax collector service fee is added{src("pbc")}. A reservation is required for in-person service and is for Palm Beach County residents only; non-residents are pointed to FLHSMV locations{src("pbres")}. Customers who are not REAL ID compliant must schedule a reservation, and the office does not issue licenses or IDs to undocumented immigrants{src("pbtc")}.</div>'}[k]
-    b=f'<h1>Driver license and ID offices in {full}: walk-in or appointment</h1><p>{len(CC[k])} offices offering driver license services, from the FLHSMV {full} page{src(sk)}. Motor vehicle only offices and license plate agents are not listed.</p>{fake("../../")}{extra}'+table(CC[k])+CONF
+    b=f'<h1>Driver license and ID offices in {full}: walk-in or appointment</h1><p>{len(CC[k])} offices offering driver license services, from the FLHSMV {full} page{src(sk)}. Motor vehicle only offices and license plate agents are not listed.</p>{fake("../../")}{extra}'+table(CC[k])+map_block(CC[k],f'Map of these {short} County offices',f'Map of {full} driver license offices')+CONF
     s.page(f'counties/{k}/index.html',f"{full} DMV offices: walk-in or appointment",f"Every driver license and ID office in {full} listed by FLHSMV, with address, hours, official walk-in policy and booking link.",b)
-b=f'<h1>Walk-in vs appointment at South Florida driver license offices</h1>{fake("../")}<h2>Offices where walk-ins are officially accepted</h2>'+table([r for r in recs if r['status']=='walk'])+'<h2>Walk-in not confirmed for this office by name</h2><p>The Miami-Dade Tax Collector states walk-in service for the offices it has taken over, says that is eight offices, and does not name them{src("mdcdl")}.</p>'+table([r for r in recs if r['status']=='gap'])+'<h2>Appointment or reservation required</h2>'+table([r for r in recs if r['status']=='appt'])+'<h2>Appointment system linked, walk-in not stated</h2>'+table([r for r in recs if r['status']=='unclear'])+CONF
+b=f'<h1>Walk-in vs appointment at South Florida driver license offices</h1>{fake("../")}<h2>Offices where walk-ins are officially accepted</h2>'+table([r for r in recs if r['status']=='walk'])+'<h2>Walk-in not confirmed for this office by name</h2><p>The Miami-Dade Tax Collector states walk-in service for the offices it has taken over, says that is eight offices, and does not name them{src("mdcdl")}.</p>'+table([r for r in recs if r['status']=='gap'])+'<h2>Appointment or reservation required</h2>'+table([r for r in recs if r['status']=='appt'])+'<h2>Appointment system linked, walk-in not stated</h2>'+table([r for r in recs if r['status']=='unclear'])+map_block(recs,'Map of the offices on this page','Map of the driver license offices listed on this page')+CONF
 s.page('walk-in-vs-appointment/index.html',"Which South Florida DMV offices take walk-in visits","South Florida driver license offices grouped by official walk-in policy: walk-in accepted, reservation required, or not stated.",b)
 b=f'''<h1>What to bring for a Florida REAL ID driver license or ID card</h1><p>From the FLHSMV U.S. citizen checklist{src("usc")}. Non-citizens: see the {a(S["imm"],"immigrant")}, {a(S["nonimm"],"non-immigrant")} and {a(S["can"],"Canadian")} lists.</p>
 <div class="card"><p>You must visit an office with documents for your first license or ID, if your current card has no star, or if you legally changed your name since your last card{src("wtb")}. Once you have provided them, you only need them again if your information changes{src("wtb")}.</p></div>
@@ -324,4 +365,33 @@ s.page('find/index.html',find_title,find_desc,find_body)
 hubs='<li><a href="/">Home</a></li>'+''.join(f'<li><a href="{href(p)}">{esc(t)}</a></li>' for g,items in G for p,t in items)
 s.page('404.html',"Page not found on the South Florida DMV walk-in guide","This address is not a page in the South Florida DMV walk-in guide. Choose the home page, a county, walk-in rules, documents, fake sites or the FAQ.",f'<h1>Page not found</h1><p>That address is not a page on this guide. Try one of these:</p><ul>{hubs}</ul>',error=True,sitemap=False,crumb='Page not found')
 write_assets(s.out)
-s.finish(); print(len(s.pages),'pages',len(recs),'offices',{k:len(v) for k,v in CC.items()})
+def copy_map_assets(out):
+    vend=os.path.join(out,'vendor','leaflet')
+    shutil.copytree(os.path.join(HERE,'vendor','leaflet'),vend)
+    shutil.copy(os.path.join(HERE,'map.js'),os.path.join(out,'map.js'))
+    js=open(os.path.join(out,'map.js'),encoding='utf-8').read()
+    if 'https://www.openstreetmap.org/copyright' not in js: raise SystemExit('Map script is missing the OpenStreetMap attribution link')
+    if 'tile.openstreetmap.org' not in js: raise SystemExit('Map script is missing OpenStreetMap tiles')
+    if 'scrollWheelZoom: false' not in js: raise SystemExit('Map script must keep scroll zoom off until a click')
+    for rel in ('leaflet.js','leaflet.css','images/marker-icon.png','images/marker-icon-2x.png','images/marker-shadow.png','LICENSE'):
+        if not os.path.isfile(os.path.join(vend,rel)): raise SystemExit('Missing Leaflet file '+rel)
+def check_maps(out):
+    pages={'counties/broward/index.html':CC['broward'],'counties/miami-dade/index.html':CC['miami-dade'],'counties/palm-beach/index.html':CC['palm-beach'],'walk-in-vs-appointment/index.html':recs}
+    for path,rows in pages.items():
+        html=open(os.path.join(out,path),encoding='utf-8').read()
+        n=html.count('>Get directions<')
+        if n!=len(rows): raise SystemExit(f'Directions count {n} != {len(rows)} on {path}')
+        if 'class="office-map"' not in html or 'src="/map.js"' not in html: raise SystemExit('Missing map on '+path)
+        if 'scroll wheel' not in html: raise SystemExit('Missing scroll wheel note on '+path)
+        if 'https://www.google.com/maps/dir/?api=1&amp;destination=' not in html: raise SystemExit('Missing directions URL on '+path)
+        pins=html.count('&quot;lat&quot;:')
+        expect=sum(1 for r in rows if pin_row(r))
+        if pins!=expect: raise SystemExit(f'Pin count {pins} != {expect} on {path}')
+    for path in [p for p,_m in s.pages]+['404.html']:
+        if path in pages: continue
+        html=open(os.path.join(out,path),encoding='utf-8').read()
+        if 'class="office-map"' in html or '>Get directions<' in html: raise SystemExit('Unexpected map markup on '+path)
+copy_map_assets(s.out)
+check_maps(s.out)
+pinned=sum(1 for r in recs if pin_row(r))
+s.finish(); print(len(s.pages),'pages',len(recs),'offices',pinned,'pins',len(recs)-pinned,'unpinned',{k:len(v) for k,v in CC.items()})

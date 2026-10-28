@@ -1,0 +1,259 @@
+{
+  "method": "OpenStreetMap Nominatim search of the official street address from the FLHSMV county location pages. Requests were limited to 1 per second with User-Agent SouthFloridaDMVWalkinGuide/1.0 (https://south-florida-dmv-walkin-guide.vercel.app). A pin is stored only when Nominatim returned an OpenStreetMap address point, building, or office whose house number, street, and ZIP match that address. Points interpolated along a road, and road centerlines with no house number, are not used. Coordinates are not estimated.",
+  "geocoded": "2026-10-28",
+  "nominatim": "https://nominatim.openstreetmap.org/search",
+  "offices": [
+    {
+      "county": "Broward",
+      "name": "Lauderdale Lakes",
+      "address": "3718-3 W. Oakland Park Blvd., Lauderdale Lakes, FL 33311",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim did not return a building or address point for 3718 West Oakland Park Boulevard, Lauderdale Lakes, ZIP 33311. The only hits were positions interpolated along the road."
+    },
+    {
+      "county": "Broward",
+      "name": "Margate",
+      "address": "1135 Banks Road, Margate, FL 33063",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim did not return a building or address point for 1135 Banks Road, Margate, ZIP 33063. The only hit was a position interpolated along Banks Road."
+    },
+    {
+      "county": "Broward",
+      "name": "Sunrise",
+      "address": "3511 N Pine Island Road, Sunrise, FL 33351",
+      "lat": 26.169563,
+      "lon": -80.2686122,
+      "query": "3511 N Pine Island Road, Sunrise, FL 33351",
+      "nominatim_place_id": 304877691,
+      "osm_type": "node",
+      "osm_id": 12557770301,
+      "matched": "OpenStreetMap office point tagged house number 3511, North Pine Island Road, ZIP 33351, Sunrise, named as the Florida Department of Highway Safety and Motor Vehicles Sunrise Office."
+    },
+    {
+      "county": "Broward",
+      "name": "Pembroke Pines",
+      "address": "8001 Pembroke Road, Pembroke Pines, FL 33025",
+      "lat": 25.995073,
+      "lon": -80.2481197,
+      "query": "8001 Pembroke Road, Pembroke Pines, FL 33025",
+      "nominatim_place_id": 304820226,
+      "osm_type": "node",
+      "osm_id": 13280420574,
+      "matched": "OpenStreetMap office point tagged house number 8001, Pembroke Road, ZIP 33025, Pembroke Pines."
+    },
+    {
+      "county": "Broward",
+      "name": "Pompano Citi Centre",
+      "address": "1955 Federal Hwy, Unit J209, Pompano Beach, FL 33062",
+      "lat": 26.2569648,
+      "lon": -80.1029498,
+      "query": "street=1955 Federal Highway, city=Pompano Beach, state=Florida, postalcode=33062",
+      "nominatim_place_id": 304734055,
+      "osm_type": "node",
+      "osm_id": 12557347301,
+      "matched": "OpenStreetMap office point named Florida Department of Highway Safety and Motor Vehicles Pompano City Center, tagged 1955 Suite 209, Federal Highway, ZIP 33062, Pompano Beach. That matches the official 1955 Federal Highway, Unit J209 address. A separate hit was only the road centerline and was not used."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Coral Gables",
+      "address": "224 Minorca Ave, Coral Gables, FL 33134",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim did not return a building or address point for 224 Minorca Avenue, Coral Gables, ZIP 33134. The only hit was a position interpolated along Minorca Avenue."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Coral Reef",
+      "address": "14653 SW 122 Ave, Miami, FL 33186",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim returned only segments of Southwest 122nd Avenue in ZIP 33186. None had house number 14653."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Downtown Miami",
+      "address": "200 NW 2nd Ave, Miami, FL 33128",
+      "lat": 25.7766389,
+      "lon": -80.1980369,
+      "query": "200 NW 2nd Ave, Miami, FL 33128",
+      "nominatim_place_id": 304977206,
+      "osm_type": "node",
+      "osm_id": 6086311611,
+      "matched": "OpenStreetMap address point tagged house number 200, Northwest 2nd Avenue, ZIP 33128, Miami. Other hits were the same number in ZIP 33150, or the road itself, and were not used."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Florida City",
+      "address": "1448 N Krome Ave, Florida City, FL 33034",
+      "lat": 25.4610641,
+      "lon": -80.4781669,
+      "query": "1448 N Krome Ave, Florida City, FL 33034",
+      "nominatim_place_id": 305546940,
+      "osm_type": "node",
+      "osm_id": 6030962695,
+      "matched": "OpenStreetMap address point tagged house number 1448, street North Krome Avenue, city Florida City, ZIP 33034. Nominatim also labels the same node with the grid name Southwest 177th Avenue."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Hialeah Gardens",
+      "address": "11093 NW 138th St., Suites #1-9, Hialeah, FL 33018",
+      "lat": 25.8985694,
+      "lon": -80.3789693,
+      "query": "11093 Northwest 138th Street, Hialeah, FL 33018",
+      "nominatim_place_id": 306507979,
+      "osm_type": "node",
+      "osm_id": 6046231359,
+      "matched": "OpenStreetMap address point tagged house number 11093, Northwest 138th Street, ZIP 33018. The point's city is Hialeah Gardens. The FLHSMV address line says Hialeah. House number, street, and ZIP match. The suite range is not a separate point."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Kendall (Suite 23)",
+      "address": "11735 SW 147th Ave, Miami, FL 33196",
+      "lat": 25.6578885,
+      "lon": -80.4308206,
+      "query": "11735 SW 147th Ave, Miami, FL 33196",
+      "nominatim_place_id": 306118393,
+      "osm_type": "node",
+      "osm_id": 6032548752,
+      "matched": "OpenStreetMap address point tagged house number 11735, Southwest 147th Avenue, ZIP 33196, Miami. Suite 23 is not a separate point. Nearby shop nodes at the same house number were not used."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Miami Beach",
+      "address": "100 16th St, Miami Beach, FL 33139",
+      "lat": 25.7889999,
+      "lon": -80.1314087,
+      "query": "100 16th St, Miami Beach, FL 33139",
+      "nominatim_place_id": 306318835,
+      "osm_type": "node",
+      "osm_id": 5641754922,
+      "matched": "Only OpenStreetMap point returned for house number 100, 16th Street, ZIP 33139, Miami Beach. The node is tagged as a shop in unit 6 at that street address. No separate building outline was returned."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Miami Central",
+      "address": "3721 NW 7th St, Miami, FL 33126",
+      "lat": 25.7814607,
+      "lon": -80.2581422,
+      "query": "3721 NW 7th St, Miami, FL 33126",
+      "nominatim_place_id": 306744819,
+      "osm_type": "node",
+      "osm_id": 8301606603,
+      "matched": "OpenStreetMap office point tagged house number 3721, Northwest 7th Street, ZIP 33126, Miami, named FLHSMV Driver License and Motor Vehicle Service Center. A second address point at the same house number is about 30 meters away and was not needed."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Miami Gardens",
+      "address": "18326 NW 7th Ave, Miami Gardens, FL 33169",
+      "lat": 25.943204,
+      "lon": -80.2153611,
+      "query": "18326 NW 7th Ave, Miami Gardens, FL 33169",
+      "nominatim_place_id": 305171942,
+      "osm_type": "node",
+      "osm_id": 13280478895,
+      "matched": "OpenStreetMap office point tagged house number 18326, Northwest 7th Avenue, ZIP 33169, Miami Gardens."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Midway Crossings (Suite 82C)",
+      "address": "7795 W Flagler St, Space 82c, Miami, FL 33144",
+      "lat": 25.773734,
+      "lon": -80.3220195,
+      "query": "7795 West Flagler Street, Miami, FL 33144",
+      "nominatim_place_id": 305110497,
+      "osm_type": "way",
+      "osm_id": 279443134,
+      "matched": "OpenStreetMap building named Midway Crossings, tagged house number 7795, West Flagler Street, ZIP 33144, Miami. Space 82c is not a separate point. The pin is the building centroid Nominatim returned."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "North Dade Justice Center",
+      "address": "15555 Biscayne Blvd, North Miami Beach, FL 33160",
+      "lat": 25.9181832,
+      "lon": -80.1555363,
+      "query": "15555 Biscayne Blvd, North Miami Beach, FL 33160",
+      "nominatim_place_id": 303106934,
+      "osm_type": "node",
+      "osm_id": 13279024074,
+      "matched": "OpenStreetMap office point tagged house number 15555, Biscayne Boulevard, ZIP 33160, North Miami Beach."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Northside",
+      "address": "7900 NW 27 Ave, Miami, FL 33147",
+      "lat": 25.8484827,
+      "lon": -80.2440577,
+      "query": "7900 Northwest 27th Avenue, Miami, FL 33147",
+      "nominatim_place_id": 303374380,
+      "osm_type": "node",
+      "osm_id": 13280444162,
+      "matched": "OpenStreetMap office point tagged house number 7900, Northwest 27th Avenue, ZIP 33147, Miami, named Driver License and Motor Vehicle Service Center."
+    },
+    {
+      "county": "Miami-Dade",
+      "name": "Richard Gerstein Justice Center",
+      "address": "1351 NW 12 St, Suite 131-133, Miami, FL 33125",
+      "lat": 25.7858617,
+      "lon": -80.2168094,
+      "query": "1351 Northwest 12th Street, Miami, FL 33125",
+      "nominatim_place_id": 306099419,
+      "osm_type": "way",
+      "osm_id": 503565121,
+      "matched": "OpenStreetMap courthouse building named Richard E. Gerstein Justice Building, tagged house number 1351, Northwest 12th Street, ZIP 33125, Miami. Suite 131-133 is not a separate point. The pin is the building centroid Nominatim returned. A road interpolation was not used."
+    },
+    {
+      "county": "Palm Beach",
+      "name": "Belle Glade",
+      "address": "2976 State Road 15, Belle Glade, FL 33430",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim returned no house number 2976 for State Road 15 in Belle Glade, ZIP 33430. The same search on Main Street, the local name of that road, also returned only the road centerline."
+    },
+    {
+      "county": "Palm Beach",
+      "name": "Delray Beach",
+      "address": "501 S. Congress Ave., Delray Beach, FL 33445",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim did not return a building or address point for 501 South Congress Avenue, Delray Beach, ZIP 33445. The only hit was a position interpolated along the road."
+    },
+    {
+      "county": "Palm Beach",
+      "name": "Greenacres",
+      "address": "4215 S. Military Trail, Greenacres, FL 33463",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim returned only segments of South Military Trail in Greenacres, ZIP 33463. None had house number 4215."
+    },
+    {
+      "county": "Palm Beach",
+      "name": "Palm Beach Gardens",
+      "address": "3185 PGA Blvd., Palm Beach Gardens, FL 33410",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim returned no house number 3185. The only hit was PGA Boulevard in ZIP 33418, which does not match ZIP 33410."
+    },
+    {
+      "county": "Palm Beach",
+      "name": "Westlake",
+      "address": "16440 Town Center Parkway South, Westlake, FL 33470",
+      "lat": 26.7555301,
+      "lon": -80.3037554,
+      "query": "16440 Town Center Parkway South, Westlake, FL 33470",
+      "nominatim_place_id": 428182453,
+      "osm_type": "node",
+      "osm_id": 14212610801,
+      "matched": "OpenStreetMap office point tagged house number 16440, Town Center Parkway South, ZIP 33470, Westlake, named Constitutional Tax Collector, Serving Palm Beach County."
+    },
+    {
+      "county": "Palm Beach",
+      "name": "West Palm Beach",
+      "address": "301 N. Olive Ave., First Floor, West Palm Beach, FL 33401",
+      "lat": null,
+      "lon": null,
+      "reason": "Nominatim did not return a building or address point for 301 North Olive Avenue, West Palm Beach, ZIP 33401. The only hit was a position interpolated along the road."
+    }
+  ]
+}

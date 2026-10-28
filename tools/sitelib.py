@@ -842,6 +842,27 @@ th{background:#e7efe9;color:var(--ink)}
 .tag.ok{background:#d8f0de}
 .tag.no{background:#f8d7d7}
 .tag.mix{background:#fdebc8}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.map-block{margin:var(--s32) 0}
+.map-block>p{max-width:66ch}
+/* z-index 1 keeps Leaflet panes under the sticky header (30, or 40 when docked). */
+.map-frame{position:relative;z-index:1;margin:var(--s16) 0}
+.office-map,.office-map.leaflet-container{height:24rem;width:100%;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:12px;font-family:var(--font);font-size:1rem;line-height:1.5;color:var(--ink)}
+.office-map .map-fallback{margin:0;padding:var(--s16) var(--s24)}
+.office-map .leaflet-popup-content{margin:var(--s12) var(--s16);font-family:var(--font);font-size:1rem;line-height:1.5;color:var(--ink)}
+.office-map .leaflet-popup-content p{margin:0 0 var(--s12);max-width:none}
+.office-map .leaflet-popup-content p:last-child{margin-bottom:0}
+.office-map .leaflet-popup-content a{color:var(--link)}
+.office-map .leaflet-popup-content-wrapper,.office-map .leaflet-popup-tip{background:#fff;color:var(--ink)}
+.office-map.leaflet-container a.leaflet-popup-close-button{width:2rem;height:2rem;font:700 1.25rem/2rem var(--font);color:var(--ink);padding:0}
+.office-map.leaflet-container .leaflet-bar a{width:48px;height:48px;line-height:48px;font-family:var(--font);font-size:1.25rem;font-weight:700;color:var(--ink)}
+.office-map.leaflet-container .leaflet-control-zoom-in,.office-map.leaflet-container .leaflet-control-zoom-out{font-family:var(--font);font-size:1.25rem;font-weight:700;line-height:48px;width:48px;height:48px}
+.office-map.leaflet-container .leaflet-control-attribution{font-family:var(--font);font-size:.875rem;line-height:1.4;color:var(--ink);background:rgba(255,255,255,.95);max-width:100%}
+.office-map.leaflet-container .leaflet-control-attribution a{color:var(--link);text-decoration:underline;text-underline-offset:.12em}
+.office-map .pin-icon{background:transparent;border:0}
+.office-map .pin-btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#0A4550;color:#fff;border:3px solid #F6D98A;font-family:var(--font);font-weight:700;font-size:1rem;line-height:1}
+.office-map .leaflet-marker-icon:focus-visible,.office-map.leaflet-container a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media(max-width:640px){.office-map,.office-map.leaflet-container{height:20rem}}
 footer{border-top:1px solid var(--line);color:var(--ink);margin-top:var(--s32)}
 footer .shell{padding-top:var(--s32);padding-bottom:var(--s40)}
 footer p{margin:var(--s12) 0}
@@ -856,7 +877,7 @@ footer p{margin:var(--s12) 0}
 body.is-docked .search-toggle:focus-visible{outline-color:var(--gold)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(forced-colors:active){
-.card,.inshort,.notice,.jump,.period,.toc,.pn a,a.action,.menu summary,.search-toggle{border:1px solid CanvasText}
+.card,.inshort,.notice,.jump,.period,.toc,.pn a,a.action,.menu summary,.search-toggle,.office-map{border:1px solid CanvasText}
 a.action{background:ButtonFace;color:ButtonText}
 }
 '''
