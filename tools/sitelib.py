@@ -373,8 +373,6 @@ DOCK_JS = r"""(function(){
   onScroll();
 })();"""
 
-TOC_BOOT = '<script>if(window.matchMedia("(min-width:960px)").matches){var d=document.currentScript.previousElementSibling;if(d&&d.tagName==="DETAILS")d.open=true;}</script>'
-
 class Site:
     def __init__(s, root, base, brand, groups, footer, css, sequences=(), summaries=None, read_next=None, aliases=None, related=(), verify=None, disclaimer=""):
         s.out = os.path.join(root, "site")
@@ -468,7 +466,6 @@ class Site:
             mark = ' aria-current="true"' if here else ""
             nav_bits.append(f'<details class="grp{" has-current" if here else ""}"><summary{mark}>{esc(g)}</summary><div class="glinks">' + "".join(links) + "</div></details>")
         nav = "".join(nav_bits)
-        h2 = re.findall(r"<h2>(.*?)</h2>", body)
         def addid(m):
             return f'<h2 id="{slug(m.group(1))}">{m.group(1)}</h2>'
         body = re.sub(r"<h2>(.*?)</h2>", addid, body)
@@ -477,11 +474,6 @@ class Site:
             head, rest = body, ""
         else:
             head, rest = body[:h2pos], body[h2pos:]
-        toc = ""
-        if len(h2) >= 3:
-            opened = " open" if len(h2) <= 8 else ""
-            lis = "".join(f'<li><a href="#{slug(x)}">{esc(H.unescape(re.sub("<[^>]+>", "", x)))}</a></li>' for x in h2)
-            toc = f'<nav class="toc" aria-label="On this page"><details class="toc-details"{opened}><summary>On this page</summary><ul>{lis}</ul></details>{TOC_BOOT}</nav>'
         plain = s.titles.get(path) or (crumb or title)
         if path == "index.html":
             crumbs = '<nav class="crumbs" aria-label="Breadcrumb"><ol><li><span aria-current="page">Home</span></li></ol></nav>'
@@ -545,7 +537,6 @@ class Site:
         notice = ""
         if s.disclaimer:
             notice = f'<div class="notice" role="note"><div class="shell"><p><strong>{esc(UNOFFICIAL)}</strong></p><p>{esc(s.disclaimer)}</p></div></div>'
-        layout_cls = "layout has-toc" if toc else "layout"
         h = f'''<!doctype html><html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="{STOPS[0]}"><title>{esc(title)}</title><meta name="description" content="{esc(desc)}">{robots}<link rel="canonical" href="{esc(canon)}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(s.brand)}"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{esc(canon)}"><meta property="og:image" content="{esc(img)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(s.brand)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{esc(img)}"><meta name="twitter:image:alt" content="{esc(s.brand)}">{verify}{ld}<style>{s.css}</style><script defer src="/_vercel/insights/script.js"></script></head><body>
 <a class="skip" href="#content">Skip to content</a>
 <div id="head-slot"><header id="site-header"><div class="shell">
@@ -557,7 +548,7 @@ class Site:
 <details class="menu"><summary aria-controls="site-nav">Topics</summary></details><nav id="site-nav" class="top" aria-label="Topics">{nav}</nav>
 <span class="nav-fade nav-fade-left" aria-hidden="true"></span><span class="nav-fade nav-fade-right" aria-hidden="true"></span><span class="nav-hint" aria-hidden="true"></span>
 </div></header></div>
-<main id="content" tabindex="-1">{notice}<div class="shell">{crumbs}{meta}<article class="content" aria-labelledby="page-title"><div class="head-block">{head}</div><div class="{layout_cls}">{toc}<div class="rest">{rest}{pn}{readnext}</div></div></article></div></main>
+<main id="content" tabindex="-1">{notice}<div class="shell">{crumbs}{meta}<article class="content" aria-labelledby="page-title"><div class="head-block">{head}</div><div class="layout"><div class="rest">{rest}{pn}{readnext}</div></div></article></div></main>
 <footer><div class="shell"><nav class="footnav" aria-label="About this guide"><a href="/find/">All pages</a><a href="/faq/">Common questions</a><a href="/disclaimer/">Disclaimer</a></nav><p>{s.footer}</p>{disc}<p><a href="/disclaimer/">Disclaimer</a></p>{s._related()}<p>Last checked: {shown}.</p></div></footer>
 <script type="application/json" id="search-data">{s._search_json()}</script><script>{SEARCH_JS}</script><script>{DOCK_JS}</script></body></html>'''
         for bad in ("\u2014", "\u2013", "&mdash;", "&ndash;"):
@@ -777,19 +768,8 @@ h3{font-size:1.28rem;margin:var(--s24) 0 var(--s12)}
 .inshort{background:#eef4f1;border-left:6px solid #1d4f3e;border-radius:12px;padding:var(--s16) var(--s24);margin:0 0 var(--s24)}
 .inshort p{margin:0}
 .layout{display:flex;flex-direction:column;gap:var(--s24);min-width:0;margin-top:var(--s32)}
-.toc{order:-1}
-.rest{order:0;min-width:0}
+.rest{min-width:0}
 .rest>h2:first-child,.rest>h3:first-child{margin-top:0}
-@media(min-width:960px){
-.layout.has-toc{display:grid;grid-template-columns:minmax(0,1fr) 17rem;column-gap:var(--s32);align-items:start}
-.layout.has-toc .rest{grid-column:1;grid-row:1;order:0}
-.layout.has-toc .toc{grid-column:2;grid-row:1;order:0;position:sticky;top:var(--scroll-pad);max-height:calc(100vh - var(--scroll-pad) - var(--s16));overflow:auto}
-}
-.toc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:var(--s12) var(--s16) var(--s16);margin:0}
-.toc summary{min-height:48px;display:flex;align-items:center;font-weight:700;cursor:pointer}
-.toc ul{list-style:none;margin:0;padding:0 0 var(--s12)}
-.toc li+li{margin-top:0}
-.toc a{display:flex;align-items:center;min-height:48px;padding:var(--s12) 0}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:var(--s24);margin:var(--s16) 0}
 h2+.card,h3+.card{margin-top:0}
 .card>:first-child{margin-top:0}
@@ -877,7 +857,7 @@ footer p{margin:var(--s12) 0}
 body.is-docked .search-toggle:focus-visible{outline-color:var(--gold)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(forced-colors:active){
-.card,.inshort,.notice,.jump,.period,.toc,.pn a,a.action,.menu summary,.search-toggle,.office-map{border:1px solid CanvasText}
+.card,.inshort,.notice,.jump,.period,.pn a,a.action,.menu summary,.search-toggle,.office-map{border:1px solid CanvasText}
 a.action{background:ButtonFace;color:ButtonText}
 }
 '''
