@@ -7,7 +7,6 @@ import os, html as H, shutil, re, json
 D = "26 Oct 2026"
 ISO = "2026-10-26"
 HEADER_LINE = "Independent guide. Not a government website."
-UNOFFICIAL = "Unofficial and independent guide. Not a government website."
 # Coastal header. Every stop, and the colours between them, stays dark enough
 # for white and sand text (WCAG AA, 4.5:1). Checked again in finish().
 STOPS = ("#0A4550", "#0E3A58", "#3A3040")
@@ -92,7 +91,7 @@ def check_contrast():
         ("#3D2A6B", WHITE, "visited link on white"),
         ("#3D2A6B", "#F4F1EA", "visited link on paper"),
         ("#3E3A34", WHITE, "muted text"),
-        (INK, "#FFF6DB", "notice text"),
+        ("#3E3A34", "#F4F1EA", "checked line on paper"),
         ("#143024", "#E5F2EA", "checked badge"),
         (INK, "#D8F0DE", "walk-in tag"),
         (INK, "#F8D7D7", "appointment tag"),
@@ -241,7 +240,7 @@ DOCK_JS = r"""(function(){
   }
   function setSearchOpen(open){
     if(!search||!toggle) return;
-    if(open && !document.body.classList.contains("is-docked")) open=false;
+    if(open && !document.body.classList.contains("is-docked") && !isNarrow()) open=false;
     search.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", open?"true":"false");
     if(open){ if(menu) menu.removeAttribute("open"); closeGroups(); }
@@ -256,13 +255,16 @@ DOCK_JS = r"""(function(){
     fullH=header.offsetHeight;
   }
   var nav=document.getElementById("site-nav");
+  function isNarrow(){
+    return window.matchMedia("(max-width: 959px)").matches;
+  }
   function closeGroups(){
     var open=document.querySelectorAll(".grp[open]");
     for(var i=0;i<open.length;i++) open[i].removeAttribute("open");
   }
   function updateHint(){
     if(!nav) return;
-    var more=docked && nav.scrollWidth>nav.clientWidth+8;
+    var more=(docked || document.body.classList.contains("is-narrow")) && nav.scrollWidth>nav.clientWidth+8;
     var atEnd=nav.scrollLeft+nav.clientWidth>=nav.scrollWidth-8;
     var atStart=nav.scrollLeft<=8;
     document.body.classList.toggle("nav-more-right", !!(more && !atEnd));
@@ -300,7 +302,18 @@ DOCK_JS = r"""(function(){
     docked=false;
     measure();
   }
+  function syncBar(){
+    var narrow=isNarrow();
+    document.body.classList.toggle("is-narrow", narrow);
+    if(header) document.documentElement.style.setProperty("--header-mobile", header.offsetHeight+"px");
+    if(narrow && docked) undock();
+    updateHint();
+  }
   function onScroll(){
+    if(isNarrow()){
+      if(docked) undock();
+      return;
+    }
     var y=window.scrollY||document.documentElement.scrollTop||0;
     var line=fullH-compactPx();
     if(!fullH) measure();
@@ -330,7 +343,7 @@ DOCK_JS = r"""(function(){
     if(box){ box.hidden=true; box.innerHTML=""; }
   });
   document.addEventListener("click", function(e){
-    if(!docked||header.contains(e.target)) return;
+    if(!(docked||isNarrow())||header.contains(e.target)) return;
     setSearchOpen(false);
     closeGroups();
     if(menu) menu.removeAttribute("open");
@@ -344,7 +357,8 @@ DOCK_JS = r"""(function(){
   }
   document.addEventListener("focusin", function(e){
     var t=e.target;
-    if(!t||!docked) return;
+    var narrow=isNarrow();
+    if(!t||(!docked && !narrow)) return;
     if(nav && nav.contains(t) && nav.scrollWidth>nav.clientWidth+8 && t.closest){
       var grp=t.closest(".grp");
       if(grp){
@@ -357,7 +371,7 @@ DOCK_JS = r"""(function(){
       }
     }
     if(header.contains(t)||(t.classList&&t.classList.contains("skip"))) return;
-    var edge=compactPx()+16;
+    var edge=(narrow?header.offsetHeight:compactPx())+16;
     var r=t.getBoundingClientRect();
     if(r.bottom>edge && r.top>=edge) return;
     var y=(window.scrollY||0)+r.top-edge;
@@ -367,9 +381,11 @@ DOCK_JS = r"""(function(){
   window.addEventListener("resize", function(){
     if(docked) undock();
     measure();
+    syncBar();
     onScroll();
   });
   measure();
+  syncBar();
   onScroll();
 })();"""
 
@@ -390,6 +406,7 @@ class Site:
         s.summaries = dict(summaries or {})
         s.read_next = dict(read_next or {})
         s.aliases = dict(aliases or {})
+        s.sourced = set()
         s.titles = {p: t for g, items in groups for p, t in items}
         s.titles["index.html"] = "Home"
         s.titles["404.html"] = "Page not found"
@@ -442,17 +459,36 @@ class Site:
                 return prev, nxt
         return None, None
 
-    def page(s, path, title, desc, body, faq=None, error=False, sitemap=True, crumb=None, checked=None, lastmod=None):
+    def _trust(s, shown, checked_against):
+        parts = []
+        if checked_against:
+            links = [a(url, label) for label, url in checked_against]
+            if len(links) == 1:
+                joined = links[0]
+            elif len(links) == 2:
+                joined = links[0] + " and " + links[1]
+            else:
+                joined = ", ".join(links[:-1]) + ", and " + links[-1]
+            parts.append(f'<p class="sourced">Checked against {joined} on {esc(shown)}.</p>')
+        parts.append(f'<p class="last-checked">Last checked: {esc(shown)}.</p>')
+        return "".join(parts)
+
+    def page(s, path, title, desc, body, faq=None, error=False, sitemap=True, crumb=None, checked=None, lastmod=None, checked_against=None):
         canon = canon_url(s.base, path)
         s._warn(path, title, desc)
         shown = checked or D
         modified = lastmod or ISO
+        if checked_against:
+            s.sourced.add(path)
         kind = "error" if error else ("home" if path == "index.html" else "article")
         summary = s.summaries.get(path, "")
         if "<h1>" in body:
             body = body.replace("<h1>", '<h1 id="page-title">', 1)
+        trust = s._trust(shown, checked_against)
+        if "<h1" in body:
+            body = body.replace("</h1>", "</h1>" + trust, 1)
         if summary and kind == "article" and path != "find/index.html" and "<h1" in body:
-            body = body.replace("</h1>", "</h1><div class=\"inshort\"><p><strong>In short.</strong> " + esc(summary) + "</p></div>", 1)
+            body = body.replace("</h1>" + trust, "</h1>" + trust + '<div class="inshort"><p><strong>In short.</strong> ' + esc(summary) + "</p></div>", 1)
         nav_bits = []
         for g, items in s.groups:
             links = []
@@ -484,7 +520,6 @@ class Site:
                 items_html.append(f'<li><a href="/#{slug(stage)}">{esc(stage)}</a></li>')
             items_html.append(f'<li><span aria-current="page">{esc(plain if not error else (crumb or "Page not found"))}</span></li>')
             crumbs = '<nav class="crumbs" aria-label="Breadcrumb"><ol>' + "".join(items_html) + "</ol></nav>"
-        meta = f'<p class="meta"><span class="checked">Last checked: {shown}</span></p>'
         prev, nxt = s._neighbors(path)
         def step_link(target, word, cls):
             if not target:
@@ -495,15 +530,15 @@ class Site:
             return f'<a class="{cls}" href="{href(target)}"><span class="pn-k">{word}</span><span class="pn-t">{esc(label)}</span></a>'
         pn_prev, pn_next = step_link(prev, "Previous", "prev"), step_link(nxt, "Next", "next")
         pn = f'<nav class="pn" aria-label="Previous and next">{pn_prev}{pn_next}</nav>' if (pn_prev or pn_next) else ""
-        rn_items = []
-        for dest in s.read_next.get(path) or []:
+        step_items = []
+        for number, dest in enumerate(s.read_next.get(path) or [], start=1):
             label = s.titles.get(dest)
             if not label:
                 continue
             blurb = s.summaries.get(dest, "")
             blurb_html = f'<span class="ls">{esc(blurb)}</span>' if blurb else ""
-            rn_items.append(f'<li><a class="jump" href="{href(dest)}"><span class="lt">{esc(label)}</span>{blurb_html}</a></li>')
-        readnext = '<aside class="readnext" aria-labelledby="read-next"><h2 id="read-next">Read next</h2><ul>' + "".join(rn_items) + "</ul></aside>" if rn_items else ""
+            step_items.append(f'<li><a class="next-card" href="{href(dest)}"><span class="next-k">Step {number}</span><span class="lt">{esc(label)}</span>{blurb_html}</a></li>')
+        nextsteps = '<aside class="nextsteps" aria-labelledby="next-steps"><h2 id="next-steps">Next steps</h2><ol>' + "".join(step_items) + "</ol></aside>" if step_items else ""
         crumbs_ld = [{"@type": "ListItem", "position": 1, "name": "Home", "item": s.base + "/"}]
         if path != "index.html":
             pos = 2
@@ -534,21 +569,19 @@ class Site:
         og_type = "website" if kind != "article" else "article"
         img = s.base + "/og.png"
         disc = f"<p>{esc(s.disclaimer)}</p>" if s.disclaimer else ""
-        notice = ""
-        if s.disclaimer:
-            notice = f'<div class="notice" role="note"><div class="shell"><p><strong>{esc(UNOFFICIAL)}</strong></p><p>{esc(s.disclaimer)}</p></div></div>'
-        h = f'''<!doctype html><html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="{STOPS[0]}"><title>{esc(title)}</title><meta name="description" content="{esc(desc)}">{robots}<link rel="canonical" href="{esc(canon)}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(s.brand)}"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{esc(canon)}"><meta property="og:image" content="{esc(img)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(s.brand)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{esc(img)}"><meta name="twitter:image:alt" content="{esc(s.brand)}">{verify}{ld}<style>{s.css}</style><script defer src="/_vercel/insights/script.js"></script></head><body>
+        h = f'''<!doctype html><html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="{STOPS[0]}"><title>{esc(title)}</title><meta name="description" content="{esc(desc)}">{robots}<link rel="canonical" href="{esc(canon)}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:locale" content="en_US"><meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(s.brand)}"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{esc(canon)}"><meta property="og:image" content="{esc(img)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(s.brand)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{esc(img)}"><meta name="twitter:image:alt" content="{esc(s.brand)}">{verify}{ld}<style>{s.css}</style><script defer src="/_vercel/insights/script.js"></script></head><body>
 <a class="skip" href="#content">Skip to content</a>
 <div id="head-slot"><header id="site-header"><div class="shell">
-<a class="brand" href="/">{MARK}<span class="name"><span class="name-main">{esc(s.brand)}</span><span class="name-compact">Walk-in guide</span><span class="name-sub">{esc(HEADER_LINE)}</span></span></a>
+<a class="brand" href="/" aria-label="{esc(s.brand)}">{MARK}<span class="name"><span class="name-main">{esc(s.brand)}</span><span class="name-compact" aria-hidden="true">South Florida DMV</span></span></a>
 <button type="button" class="search-toggle" aria-expanded="false" aria-controls="site-search"><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="search-toggle-text">Search</span></button>
 <a class="headlink" href="/find/">All pages</a>
 <span class="headcta"><a class="action" href="/fake-appointment-sites/"><span class="action-long">Spot fake appointment sites</span><span class="action-short"><span class="action-wide">Fake sites</span><span class="action-mini">Fakes</span></span></a></span>
 <div class="search-wrap" id="site-search"><form class="sitesearch" role="search" action="/find/" method="get"><label for="q">Search this guide</label><input id="q" name="q" type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button type="submit">Search</button></form><div id="search-results" class="search-results" hidden role="region" aria-live="polite" aria-label="Matching pages"></div></div>
-<details class="menu"><summary aria-controls="site-nav">Topics</summary></details><nav id="site-nav" class="top" aria-label="Topics">{nav}</nav>
-<span class="nav-fade nav-fade-left" aria-hidden="true"></span><span class="nav-fade nav-fade-right" aria-hidden="true"></span><span class="nav-hint" aria-hidden="true"></span>
+<details class="menu"><summary aria-controls="site-nav">Topics</summary></details><div class="nav-row"><nav id="site-nav" class="top" aria-label="Topics">{nav}</nav>
+<span class="nav-fade nav-fade-left" aria-hidden="true"></span><span class="nav-fade nav-fade-right" aria-hidden="true"></span><span class="nav-hint" aria-hidden="true"></span></div>
+<p class="head-note">{esc(HEADER_LINE)} <a href="/disclaimer/">Disclaimer</a></p>
 </div></header></div>
-<main id="content" tabindex="-1">{notice}<div class="shell">{crumbs}{meta}<article class="content" aria-labelledby="page-title"><div class="head-block">{head}</div><div class="layout"><div class="rest">{rest}{pn}{readnext}</div></div></article></div></main>
+<main id="content" tabindex="-1"><div class="shell">{crumbs}<article class="content" aria-labelledby="page-title"><div class="head-block">{head}</div><div class="layout"><div class="rest">{rest}{pn}{nextsteps}</div></div></article></div></main>
 <footer><div class="shell"><nav class="footnav" aria-label="About this guide"><a href="/find/">All pages</a><a href="/faq/">Common questions</a><a href="/disclaimer/">Disclaimer</a></nav><p>{s.footer}</p>{disc}<p><a href="/disclaimer/">Disclaimer</a></p>{s._related()}<p>Last checked: {shown}.</p></div></footer>
 <script type="application/json" id="search-data">{s._search_json()}</script><script>{SEARCH_JS}</script><script>{DOCK_JS}</script></body></html>'''
         for bad in ("\u2014", "\u2013", "&mdash;", "&ndash;"):
@@ -566,13 +599,27 @@ class Site:
         open(os.path.join(s.out, "sitemap.xml"), "w", encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
         worst, worst_at, _rows = check_contrast()
         print(f"Header contrast worst {worst:.2f}:1 ({worst_at})")
-        needles = (s.disclaimer, "Last checked:", "/_vercel/insights/script.js", HEADER_LINE, UNOFFICIAL)
+        needles = (s.disclaimer, "Last checked:", "/_vercel/insights/script.js", HEADER_LINE, 'href="/disclaimer/"', 'property="og:locale" content="en_US"')
         gsc = s.verify.get("google-site-verification") or ""
         for path in [p for p, _m in s.pages] + ["404.html"]:
             html = open(os.path.join(s.out, path), encoding="utf-8").read()
             for needle in needles:
                 if needle and needle not in html:
                     raise SystemExit(f"Missing {needle!r} on {path}")
+            if 'class="notice"' in html or "On this page" in html:
+                raise SystemExit("Old disclaimer bar or contents box returned on " + path)
+            h1_at = html.find("</h1>")
+            lc_at = html.find("Last checked:")
+            if h1_at < 0 or lc_at < h1_at:
+                raise SystemExit("Last checked should sit under the H1 on " + path)
+            ca_at = html.find("Checked against ")
+            if path in s.sourced:
+                if not (h1_at < ca_at < lc_at):
+                    raise SystemExit("Checked against should sit under the H1 on " + path)
+            elif ca_at != -1:
+                raise SystemExit("Unexpected checked-against line on " + path)
+            if s.read_next.get(path) and 'id="next-steps"' not in html:
+                raise SystemExit("Missing next steps on " + path)
             if gsc and gsc not in html:
                 raise SystemExit("Missing Google verification on " + path)
             if path != "404.html":
@@ -636,21 +683,24 @@ img,svg{max-width:100%}
 .skip{position:absolute;left:var(--s12);top:0;transform:translateY(-120%);background:#fff;color:var(--ink);padding:var(--s12) var(--s16);z-index:50;min-height:48px;font-weight:700}
 .skip:focus,.skip:focus-visible{transform:none}
 #head-slot{min-width:0}
-#site-header{background:var(--head-bg);color:#fff;position:relative;z-index:30}
+#site-header{background:var(--head-bg);color:#fff;position:relative;z-index:40}
 #site-header a{color:#fff}
-#site-header .shell{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand words" "cta cta" "search search" "menu menu" "nav nav";align-items:center;column-gap:var(--s16);row-gap:0;padding-top:var(--s24);padding-bottom:var(--s24);position:relative}
+#site-header .shell{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand searchbtn" "nav nav" "note note";align-items:center;column-gap:var(--s12);row-gap:var(--s12);padding-top:var(--s12);padding-bottom:var(--s12);position:relative}
 .brand{grid-area:brand;display:flex;align-items:center;gap:var(--s12);min-width:0;min-height:48px;color:#fff;text-decoration:none;font-weight:700}
 .mark{flex:none;display:flex}
-.mark svg{display:block;width:48px;height:32px}
+.mark svg{display:block;width:36px;height:24px}
 .name{display:flex;flex-direction:column;min-width:0}
-.name-main{font-size:1.125rem;line-height:1.3}
-.name-compact{display:none}
-.name-sub{font-size:1rem;font-weight:700;color:var(--sand);line-height:1.35;margin-top:var(--s12)}
-.headlink{grid-area:words;display:inline-flex;align-items:center;justify-self:end;min-height:48px;padding:var(--s12) 0;font-weight:700;text-decoration:underline;text-underline-offset:.15em}
-.headcta{grid-area:cta;display:flex;align-items:center;margin-top:var(--s16)}
-.search-toggle{grid-area:searchbtn;display:none;align-items:center;justify-content:center;gap:var(--s12);min-height:48px;min-width:48px;padding:var(--s12);font:inherit;font-size:1rem;font-weight:700;line-height:1.2;color:#fff;background:transparent;border:2px solid #fff;border-radius:8px;cursor:pointer;position:relative}
+.name-main{display:none;font-size:1.125rem;line-height:1.3}
+.name-compact{display:block;font-size:1rem;line-height:1.2;font-weight:700;white-space:nowrap}
+.head-note{grid-area:note;margin:0;font-size:1rem;font-weight:700;line-height:1.35;color:var(--sand)}
+#site-header .head-note a,#site-header .head-note a:visited{color:var(--sand)}
+.headlink{grid-area:words;display:none;align-items:center;justify-self:end;min-height:48px;padding:var(--s12) 0;font-weight:700;text-decoration:underline;text-underline-offset:.15em}
+.headcta{grid-area:cta;display:none;align-items:center;margin-top:0}
+.search-toggle{grid-area:searchbtn;display:inline-flex;align-items:center;justify-content:center;gap:var(--s12);min-height:48px;min-width:48px;width:48px;padding:0;font:inherit;font-size:1rem;font-weight:700;line-height:1.2;color:#fff;background:transparent;border:2px solid #fff;border-radius:8px;cursor:pointer;position:relative}
+.search-toggle-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .search-icon{width:1.15rem;height:1.15rem;display:block;flex:none}
-.search-wrap{grid-area:search;position:relative;margin-top:var(--s16)}
+.search-wrap{grid-area:auto;display:none;margin:0;position:absolute;top:100%;left:0;right:0;z-index:36;background:var(--head-bg);padding:var(--s12) 0 var(--s16);box-shadow:0 12px 24px rgba(0,0,0,.28)}
+.search-wrap.is-open{display:block}
 .sitesearch{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s12)}
 .sitesearch label{flex:1 1 100%;color:#fff;font-weight:700}
 .sitesearch input[type="search"]{flex:1 1 12rem;min-width:0;min-height:48px;font:inherit;color:var(--ink);background:#fff;border:2px solid #fff;border-radius:8px;padding:var(--s12) var(--s16)}
@@ -666,46 +716,48 @@ a.action{display:inline-flex;align-items:center;justify-content:center;min-heigh
 a.action:hover{background:#e2bf62;color:var(--ink)}
 a.action:visited,#site-header a.action{color:var(--ink)}
 .headcta a.action{width:100%}
-.menu{grid-area:menu;margin-top:var(--s16)}
+.menu{display:none}
 .menu summary{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;padding:var(--s12) var(--s16);background:#fff;color:var(--ink);border-radius:8px;font-weight:700;cursor:pointer;list-style:none}
 .menu summary::-webkit-details-marker,.grp summary::-webkit-details-marker{display:none}
 .menu summary::marker,.grp summary::marker{content:""}
-nav.top{grid-area:nav;display:none;flex-wrap:wrap;align-items:stretch;gap:var(--s12);margin-top:var(--s16);padding-top:var(--s16);border-top:1px solid rgba(255,255,255,.35)}
-details.menu[open]~nav.top{display:flex}
-.grp{position:relative;flex:1 1 auto;min-width:0}
-.grp>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--s12);min-height:48px;padding:var(--s12) var(--s16);color:#fff;font-weight:700;cursor:pointer;list-style:none}
+.nav-row{grid-area:nav;position:relative;min-width:0}
+nav.top{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:var(--s12);margin:0;padding:0;border:0;min-width:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:thin}
+.grp{position:relative;flex:0 0 auto;min-width:0;width:auto}
+.grp>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--s12);min-height:48px;padding:var(--s12) var(--s16);color:#fff;font-weight:700;cursor:pointer;list-style:none;white-space:nowrap;scroll-snap-align:start;border:1px solid rgba(255,255,255,.85);border-radius:999px;background:rgba(0,0,0,.18)}
 .grp>summary::after{content:"";border:solid #fff;border-width:0 2px 2px 0;width:.45rem;height:.45rem;transform:rotate(45deg);flex:none;margin-top:-.15rem}
 .grp[open]>summary::after{transform:rotate(-135deg);margin-top:.25rem}
 .grp.has-current>summary{box-shadow:inset 0 -3px 0 var(--gold)}
-.glinks{display:flex;flex-direction:column;min-width:16rem}
-.glinks a{display:flex;align-items:center;min-height:48px;padding:var(--s12) var(--s16);color:#fff;text-decoration:underline;text-underline-offset:.15em}
+.glinks{display:flex;flex-direction:column;min-width:0}
+.glinks a{display:flex;align-items:center;min-height:48px;padding:var(--s12) var(--s16);color:#fff;text-decoration:underline;text-underline-offset:.15em;border-bottom:1px solid rgba(255,255,255,.28)}
 .glinks a.is-current{font-weight:700;background:rgba(255,255,255,.16);border-radius:8px}
-@media(min-width:720px){
-#site-header .shell{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"brand words cta" "search search search" "menu menu menu" "nav nav nav";column-gap:var(--s24)}
-.headcta{margin-top:0;justify-self:end}
+.grp[open] .glinks{position:fixed;z-index:46;top:var(--header-mobile,168px);left:0;right:0;background:var(--deep);border:2px solid #fff;border-radius:0 0 12px 12px;padding:var(--s12);box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:min(60vh,22rem);overflow:auto}
+@media(min-width:960px){
+#site-header{position:relative;z-index:30}
+#site-header .shell{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"brand words cta" "note note note" "search search search" "nav nav nav";column-gap:var(--s24);row-gap:0;padding-top:var(--s24);padding-bottom:var(--s24)}
+.mark svg{width:48px;height:32px}
+.name-main{display:block}
+.name-compact{display:none}
+.headlink{display:inline-flex}
+.headcta{display:flex;justify-self:end}
 .headcta a.action{width:auto}
+.search-toggle{display:none}
+.search-toggle-text{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto}
+.search-wrap{grid-area:search;display:block;position:relative;top:auto;left:auto;right:auto;margin-top:var(--s16);padding:0;box-shadow:none;background:transparent}
+.head-note{margin-top:var(--s12)}
+nav.top{overflow:visible;flex-wrap:nowrap;margin-top:var(--s24);padding-top:var(--s16);border-top:1px solid rgba(255,255,255,.35);scroll-snap-type:none}
+.grp>summary{border:0;border-radius:0;background:transparent;scroll-snap-align:none}
+.glinks{min-width:16rem}
+.glinks a{border-bottom:0}
+.grp[open] .glinks{position:absolute;z-index:34;top:100%;left:0;right:auto;max-width:min(22rem,92vw);border-radius:8px;max-height:none}
 .sitesearch{flex-wrap:nowrap}
 .sitesearch label{flex:0 0 auto}
-}
-@media(min-width:960px){
-.menu{display:none}
-#site-header .shell{grid-template-areas:"brand words cta" "search search search" "nav nav nav"}
-nav.top{display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:var(--s12);margin-top:var(--s24);padding-top:var(--s16);padding-bottom:0}
-.grp{flex:0 0 auto}
-.grp>summary{min-height:48px;padding:var(--s12) var(--s16);white-space:nowrap;font-size:1rem;gap:var(--s12)}
-.grp[open] .glinks{position:absolute;z-index:34;top:100%;left:0;background:var(--deep);border:2px solid #fff;border-radius:8px;padding:var(--s12);box-shadow:0 8px 24px rgba(0,0,0,.28)}
-}
-@media(max-width:959px){
-nav.top{flex-direction:column;gap:var(--s12)}
-.grp{width:100%}
-.glinks a{border-bottom:1px solid rgba(255,255,255,.28)}
 }
 @media(max-width:640px){.name-main{font-size:1.05rem}}
 @media(max-width:359px){body{font-size:1.0625rem}.shell{padding-left:var(--s12);padding-right:var(--s12)}}
 body.is-docked #site-header{position:fixed;top:0;left:0;right:0;height:var(--header-compact);z-index:40;box-shadow:0 2px 12px rgba(0,0,0,.28);overflow:visible}
 body.is-docked #site-header .shell{height:100%;padding:var(--s12) var(--s16);column-gap:var(--s12);row-gap:var(--s12);grid-template-columns:minmax(0,1fr) auto auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"brand searchbtn cta" "nav nav nav";align-items:center}
 body.is-docked .brand{min-height:48px;min-width:0;gap:var(--s12)}
-body.is-docked .name-sub,body.is-docked .headlink,body.is-docked .menu{display:none}
+body.is-docked .head-note,body.is-docked .headlink,body.is-docked .menu{display:none}
 body.is-docked .name-main{display:block;font-size:1rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body.is-docked .name-compact{display:none}
 body.is-docked .headcta{margin:0}
@@ -716,7 +768,8 @@ body.is-docked .action-mini{display:none}
 body.is-docked .search-toggle{display:inline-flex}
 body.is-docked .search-wrap{display:none;margin:0;position:absolute;top:100%;left:0;right:0;z-index:36;background:var(--head-bg);padding:var(--s16) 0;box-shadow:0 12px 24px rgba(0,0,0,.28)}
 body.is-docked .search-wrap.is-open{display:block}
-body.is-docked nav.top{display:flex;grid-area:nav;position:relative;top:auto;left:auto;right:auto;margin:0;padding:0;border:0;background:transparent;box-shadow:none;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:var(--s12);min-width:0;max-height:none;overflow:visible}
+body.is-docked .nav-row{grid-area:nav;min-width:0}
+body.is-docked nav.top{display:flex;position:relative;margin:0;padding:0;border:0;background:transparent;box-shadow:none;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:var(--s12);min-width:0;max-height:none;overflow:visible}
 body.is-docked .grp{flex:0 0 auto;width:auto}
 body.is-docked .grp>summary{min-height:48px;padding:var(--s12) var(--s16);white-space:nowrap;font-size:1rem;gap:var(--s12);border-radius:8px}
 body.is-docked .grp.has-current>summary{background:rgba(255,255,255,.14);box-shadow:inset 0 -3px 0 var(--gold)}
@@ -724,10 +777,10 @@ body.is-docked .grp[open] .glinks{position:absolute;z-index:46;top:calc(100% + 1
 body.is-docked .grp:nth-last-child(-n+2)[open] .glinks{left:auto;right:0}
 .nav-fade,.nav-hint{display:none}
 .nav-hint::before{content:"";display:block;width:.5rem;height:.5rem;border:solid var(--gold);border-width:0 3px 3px 0;transform:rotate(-45deg)}
-body.is-docked.nav-more-right .nav-fade-right,body.is-docked.nav-more-left .nav-fade-left{display:block;position:absolute;bottom:12px;height:48px;width:40px;pointer-events:none;z-index:4}
-body.is-docked.nav-more-right .nav-fade-right{right:0;background:linear-gradient(90deg,rgba(58,48,64,0),#3A3040 70%)}
-body.is-docked.nav-more-left .nav-fade-left{left:0;background:linear-gradient(90deg,#0A4550 30%,rgba(10,69,80,0))}
-body.is-docked.nav-more-right .nav-hint{display:flex;align-items:center;justify-content:flex-end;position:absolute;right:var(--s12);bottom:12px;width:24px;height:48px;pointer-events:none;z-index:5}
+body.is-docked.nav-more-right .nav-fade-right,body.is-docked.nav-more-left .nav-fade-left,body.is-narrow.nav-more-right .nav-fade-right,body.is-narrow.nav-more-left .nav-fade-left{display:block;position:absolute;top:0;bottom:0;width:40px;pointer-events:none;z-index:4}
+body.is-docked.nav-more-right .nav-fade-right,body.is-narrow.nav-more-right .nav-fade-right{right:0;background:linear-gradient(90deg,rgba(58,48,64,0),#3A3040 70%)}
+body.is-docked.nav-more-left .nav-fade-left,body.is-narrow.nav-more-left .nav-fade-left{left:0;background:linear-gradient(90deg,#0A4550 30%,rgba(10,69,80,0))}
+body.is-docked.nav-more-right .nav-hint,body.is-narrow.nav-more-right .nav-hint{display:flex;align-items:center;justify-content:flex-end;position:absolute;right:var(--s12);top:0;bottom:0;width:24px;pointer-events:none;z-index:5}
 @media(max-width:959px){
 body.is-docked nav.top{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:thin;padding-bottom:0}
 body.is-docked .grp>summary{scroll-snap-align:start;border:1px solid rgba(255,255,255,.85);border-radius:999px;background:rgba(0,0,0,.18)}
@@ -744,20 +797,15 @@ body.is-docked .headcta a.action{padding:var(--s12);font-size:1rem}
 body.is-docked .action-wide{display:none}
 body.is-docked .action-mini{display:inline}
 }
-.notice{background:#fff6db;color:var(--ink);border-bottom:3px solid #8a5a00}
-.notice .shell{padding-top:var(--s16);padding-bottom:var(--s16)}
-.notice p{margin:0 0 var(--s12);max-width:66ch}
-.notice p:last-child{margin-bottom:0}
 main{min-width:0}
 main>.shell{padding-top:var(--s24);padding-bottom:var(--s40)}
 main:focus{outline:none}
 main:focus-visible{outline:3px solid var(--ink);outline-offset:-3px}
 .crumbs ol{display:flex;flex-wrap:wrap;list-style:none;padding:0;margin:0 0 var(--s12);gap:0}
 .crumbs li{display:flex;align-items:center;min-height:48px}
-.crumbs li+li::before{content:"/";margin:0 var(--s12);color:#3e3a34}
+.crumbs li:not(:last-child)::after{content:"/";margin:0 var(--s12);color:#3e3a34}
 .crumbs a{display:inline-flex;align-items:center;min-height:48px}
-.meta{display:flex;flex-wrap:wrap;gap:var(--s12);align-items:center;margin:0 0 var(--s24);max-width:none}
-.checked{display:inline-flex;align-items:center;min-height:48px;background:#e5f2ea;color:#143024;border:1px solid #1d4f3e;border-radius:8px;padding:var(--s12) var(--s16);font-size:1rem}
+.sourced,.last-checked{color:#3e3a34}
 article.content{min-width:0}
 .head-block{margin:0}
 .head-block p{margin:0 0 var(--s16);max-width:66ch}
@@ -786,8 +834,8 @@ h2+.card,h3+.card{margin-top:0}
 .period>h3{margin:0 0 var(--s16);font-size:1.35rem}
 .period>h3::before{content:counter(step) ". "}
 .period-pages{list-style:none;padding:0;margin:0;display:grid;gap:var(--s12)}
-.tasks,.link-grid,.readnext ul,.index-list{list-style:none;padding:0;margin:var(--s16) 0 0;display:grid;gap:var(--s16);grid-template-columns:1fr}
-@media(min-width:720px){.tasks,.link-grid,.readnext ul,.index-list{grid-template-columns:1fr 1fr}}
+.tasks,.link-grid,.index-list{list-style:none;padding:0;margin:var(--s16) 0 0;display:grid;gap:var(--s16);grid-template-columns:1fr}
+@media(min-width:720px){.tasks,.link-grid,.index-list{grid-template-columns:1fr 1fr}}
 .topic{margin:0 0 var(--s32)}
 .topic>h3{margin-top:0}
 .jump{display:flex;flex-direction:column;justify-content:center;gap:var(--s12);min-height:48px;padding:var(--s16) var(--s24);background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;text-decoration:none}
@@ -805,12 +853,21 @@ a.jump:visited .lt{color:var(--visited)}
 .pn .pn-t{color:var(--link);font-weight:700;text-decoration:underline;text-underline-offset:.12em}
 .pn a:visited .pn-t{color:var(--visited)}
 @media(min-width:720px){.pn:has(a.prev):has(a.next){grid-template-columns:1fr 1fr}.pn a.next{align-items:flex-end;text-align:right}}
-.readnext{margin-top:var(--s40)}
-.readnext h2{margin-top:0}
+.nextsteps{margin-top:var(--s40)}
+.nextsteps h2{margin-top:0}
+.nextsteps ol{list-style:none;padding:0;margin:var(--s16) 0 0;display:grid;gap:var(--s16);grid-template-columns:1fr}
+.next-card{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s12);height:100%;min-height:48px;padding:var(--s24);background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;text-decoration:none}
+.next-card .next-k{color:#3e3a34;font-size:1rem;font-weight:700}
+.next-card .lt{color:var(--link);font-weight:700;text-decoration:underline;text-underline-offset:.12em;font-size:1.25rem}
+.next-card .ls{color:var(--ink);font-size:1rem;font-weight:400}
+a.next-card:visited .lt{color:var(--visited)}
+@media(min-width:960px){.nextsteps ol{grid-template-columns:1fr 1fr 1fr}}
 .index-status{font-weight:700;margin:0 0 var(--s16)}
 a{color:var(--link)}
 a:visited{color:var(--visited)}
 .content a{text-decoration:underline;text-underline-offset:.12em}
+.content a.next-card,.content a.jump{text-decoration:none}
+.content a.next-card .lt,.content a.jump .lt{text-decoration:underline;text-underline-offset:.12em}
 table{border-collapse:collapse;width:100%;background:#fff;font-size:1rem}
 th,td{border:1px solid var(--line);padding:var(--s12) var(--s16);text-align:left;vertical-align:top}
 th{background:#e7efe9;color:var(--ink)}
@@ -855,9 +912,18 @@ footer p{margin:var(--s12) 0}
 #site-header a.action:focus-visible,#site-header .sitesearch button:focus-visible{outline-color:#fff}
 .menu summary:focus-visible{outline-color:var(--ink)}
 body.is-docked .search-toggle:focus-visible{outline-color:var(--gold)}
+@media(max-width:959px){
+#site-header{position:fixed;top:0;left:0;right:0;width:100%}
+#head-slot{height:var(--header-mobile,200px)}
+html{scroll-padding-top:var(--header-mobile,200px)}
+h1,h2,h3,h4,h5,h6,[id]{scroll-margin-top:calc(var(--header-mobile,200px) + var(--s12))}
+.crumbs ol{display:block}
+.crumbs li,.crumbs a{min-height:32px}
+.crumbs li{display:inline-flex}
+}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(forced-colors:active){
-.card,.inshort,.notice,.jump,.period,.pn a,a.action,.menu summary,.search-toggle,.office-map{border:1px solid CanvasText}
+.card,.inshort,.jump,.period,.pn a,.next-card,a.action,.search-toggle,.office-map,.head-note{border:1px solid CanvasText}
 a.action{background:ButtonFace;color:ButtonText}
 }
 '''
